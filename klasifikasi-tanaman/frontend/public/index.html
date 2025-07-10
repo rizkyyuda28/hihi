@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Detection - AI Powered Diagnosis</title>
+    
+    <!-- Modern CSS Framework -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .disease-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+        
+        .upload-area.dragover {
+            border-color: #1d4ed8;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🌱</span>
+                    </div>
+                    <span class="text-white font-bold text-xl">PlantAI</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#home" class="text-white hover:text-blue-200 transition-colors">Home</a>
+                    <a href="#classify" class="text-white hover:text-blue-200 transition-colors">Classify</a>
+                    <a href="#about" class="text-white hover:text-blue-200 transition-colors">About</a>
+                    <button onclick="showLoginModal()" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-16">
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center px-4">
+            <div class="max-w-6xl mx-auto text-center">
+                <div class="fade-in">
+                    <div class="floating-animation inline-block mb-8">
+                        <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto shadow-lg">
+                            <span class="text-5xl">🔬</span>
+                        </div>
+                    </div>
+                    
+                    <h1 class="text-6xl md:text-7xl font-bold text-white mb-6">
+                        AI Plant Disease
+                        <span class="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                            Detection
+                        </span>
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-blue-100 mb-12 max-w-3xl mx-auto leading-relaxed">
+                        Deteksi penyakit tanaman dengan teknologi AI terdepan. 
+                        Akurasi tinggi untuk diagnosis instan jagung, kentang, dan tomat.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="scrollToSection('classify')" class="btn-primary text-lg px-8 py-4 rounded-xl font-semibold flex items-center justify-center">
+                            <span class="mr-2">🚀</span>
+                            Mulai Deteksi Sekarang
+                        </button>
+                        <button onclick="scrollToSection('about')" class="bg-white bg-opacity-20 text-white px-8 py-4 rounded-xl font-semibold hover:bg-opacity-30 transition-all">
+                            Pelajari Lebih Lanjut
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="py-20 px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">Statistik Model AI</h2>
+                    <p class="text-xl text-blue-100">Performa tinggi dengan akurasi yang telah terbukti</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="stat-card rounded-2xl p-8 text-center hover-scale">
+                        <div class="text-5xl font-bold text-blue-600 mb-2">86.12%</div>
+                        <div class="text-gray-600 font-medium">Model Accuracy</div>
+                        <div class="text-sm text-gray-500 mt-2">Tingkat akurasi model AI</div>
+                    </div>
+                    <div class="stat-card rounded-2xl p-8 text-center hover-scale">
+                        <div class="text-5xl font-bold text-green-600 mb-2">17</div>
+                        <div class="text-gray-600 font-medium">Disease Categories</div>
+                        <div class="text-sm text-gray-500 mt-2">Jenis penyakit yang dapat dideteksi</div>
+                    </div>
+                    <div class="stat-card rounded-2xl p-8 text-center hover-scale">
+                        <div class="text-5xl font-bold text-purple-600 mb-2">3</div>
+                        <div class="text-gray-600 font-medium">Plant Types</div>
+                        <div class="text-sm text-gray-500 mt-2">Jenis tanaman yang didukung</div>
+                    </div>
+                    <div class="stat-card rounded-2xl p-8 text-center hover-scale">
+                        <div class="text-5xl font-bold text-orange-600 mb-2">~1s</div>
+                        <div class="text-gray-600 font-medium">Response Time</div>
+                        <div class="text-sm text-gray-500 mt-2">Waktu analisis rata-rata</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disease Categories Section -->
+        <section id="about" class="py-20 px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">Kategori Penyakit yang Dapat Dideteksi</h2>
+                    <p class="text-xl text-blue-100">Sistem AI kami dapat mendeteksi berbagai penyakit pada tanaman berikut</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Corn Diseases -->
+                    <div class="disease-card rounded-2xl p-8 hover-scale">
+                        <div class="flex items-center mb-6">
+                            <span class="text-4xl mr-4">🌽</span>
+                            <h3 class="text-2xl font-bold text-gray-800">Jagung (Corn)</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>
+                                Cercospora leaf spot
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>
+                                Common rust
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>
+                                Northern Leaf Blight
+                            </li>
+                            <li class="flex items-center text-green-600 font-semibold">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                Healthy
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Potato Diseases -->
+                    <div class="disease-card rounded-2xl p-8 hover-scale">
+                        <div class="flex items-center mb-6">
+                            <span class="text-4xl mr-4">🥔</span>
+                            <h3 class="text-2xl font-bold text-gray-800">Kentang (Potato)</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                Early blight
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                Late blight
+                            </li>
+                            <li class="flex items-center text-green-600 font-semibold">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                Healthy
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tomato Diseases -->
+                    <div class="disease-card rounded-2xl p-8 hover-scale">
+                        <div class="flex items-center mb-6">
+                            <span class="text-4xl mr-4">🍅</span>
+                            <h3 class="text-2xl font-bold text-gray-800">Tomat (Tomato)</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Bacterial spot
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Early blight
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Late blight
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Leaf Mold
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Septoria leaf spot
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Spider mites
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Target spot
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Yellow leaf curl virus
+                            </li>
+                            <li class="flex items-center text-gray-700">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                Tomato mosaic virus
+                            </li>
+                            <li class="flex items-center text-green-600 font-semibold">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                Healthy
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Classification Section -->
+        <section id="classify" class="py-20 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">Siap untuk Mencoba?</h2>
+                    <p class="text-xl text-blue-100">Upload gambar tanaman Anda dan dapatkan diagnosis penyakit secara instan</p>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                    <div class="upload-area rounded-2xl p-12 text-center cursor-pointer" id="uploadArea">
+                        <div class="mb-6">
+                            <span class="text-6xl">📁</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Drag & Drop atau Click untuk Upload</h3>
+                        <p class="text-gray-600 mb-6">Pilih gambar daun tanaman (JPG, PNG, maksimal 10MB)</p>
+                        <input type="file" id="fileInput" accept="image/*" class="hidden">
+                        <button onclick="document.getElementById('fileInput').click()" class="btn-primary px-8 py-3 rounded-xl font-semibold">
+                            Pilih Gambar
+                        </button>
+                    </div>
+                    
+                    <!-- Image Preview -->
+                    <div id="imagePreview" class="hidden mt-8">
+                        <div class="text-center">
+                            <img id="previewImg" class="max-w-full h-64 object-cover rounded-2xl mx-auto shadow-lg">
+                            <div class="mt-6 flex justify-center space-x-4">
+                                <button onclick="analyzeImage()" class="btn-primary px-8 py-3 rounded-xl font-semibold">
+                                    🔍 Analisis Gambar
+                                </button>
+                                <button onclick="resetUpload()" class="bg-gray-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results -->
+                    <div id="resultsSection" class="hidden mt-8">
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">📊 Hasil Analisis</h3>
+                            <div id="resultContent" class="space-y-4">
+                                <!-- Results will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Loading -->
+                    <div id="loadingSection" class="hidden mt-8 text-center">
+                        <div class="inline-block">
+                            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+                            <p class="text-gray-600 font-semibold">Menganalisis gambar...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12 px-4 text-center">
+            <div class="max-w-6xl mx-auto">
+                <div class="border-t border-blue-300 border-opacity-30 pt-8">
+                    <p class="text-blue-100">&copy; 2024 PlantAI - Plant Disease Detection System. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 w-full">
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Login to Dashboard</h3>
+                <p class="text-gray-600">Access admin features and detailed analytics</p>
+            </div>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Username</label>
+                    <input type="text" id="username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter username">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter password">
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 btn-primary py-3 rounded-lg font-semibold">Login</button>
+                    <button type="button" onclick="hideLoginModal()" class="flex-1 bg-gray-500 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        
+        // Smooth scrolling
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        // Modal functions
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+        
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+        
+        // File upload handling
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+        
+        function handleFileSelect(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    uploadArea.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function resetUpload() {
+            imagePreview.classList.add('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+            uploadArea.style.display = 'block';
+            fileInput.value = '';
+        }
+        
+        function analyzeImage() {
+            const loadingSection = document.getElementById('loadingSection');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            loadingSection.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+            
+            // Simulate API call
+            setTimeout(() => {
+                loadingSection.classList.add('hidden');
+                showResults();
+            }, 3000);
+        }
+        
+        function showResults() {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultContent = document.getElementById('resultContent');
+            
+            // Sample result
+            resultContent.innerHTML = `
+                <div class="text-center mb-6">
+                    <div class="inline-block bg-green-100 px-6 py-3 rounded-full">
+                        <span class="text-green-800 font-bold text-lg">🌱 Healthy Plant Detected!</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl">
+                        <h4 class="font-bold text-gray-800 mb-3">📊 Analysis Results</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Confidence:</span>
+                                <span class="font-bold text-green-600">94.5%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Plant Type:</span>
+                                <span class="font-bold">Tomato</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Status:</span>
+                                <span class="font-bold text-green-600">Healthy</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl">
+                        <h4 class="font-bold text-gray-800 mb-3">💡 Recommendations</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>• Continue regular watering schedule</li>
+                            <li>• Maintain proper sunlight exposure</li>
+                            <li>• Monitor for early disease signs</li>
+                            <li>• Apply balanced fertilizer monthly</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            resultsSection.classList.remove('hidden');
+        }
+        
+        // Login form handling
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'password') {
+                alert('Login successful! Redirecting to dashboard...');
+                hideLoginModal();
+                // Redirect to admin dashboard or classification page
+                window.location.href = '/classification';
+            } else {
+                alert('Invalid credentials. Please try again.');
+            }
+        });
+        
+        // Add floating animations on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.floating-animation');
+            if (parallax) {
+                const speed = scrolled * 0.5;
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,11 @@
+/modern-plant-classifier/backend/node_modules
+/modern-plant-classifier/backend/package-lock.json
+/modern-plant-classifier/backend/package.json
+/modern-plant-classifier/backend/package.json
+/klasifikasi-tanaman/backend/node_modules
+/klasifikasi-tanaman/backend/package-lock.json
+/klasifikasi-tanaman/backend/package.json
+/klasifikasi-tanaman/backend/package.json
+
+.cursor/rules
+.cursor/rules/mlrules.mdc

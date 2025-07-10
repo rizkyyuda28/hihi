@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "plant": {
+    "name": "Common rust",
+    "scientificName": null,
+    "description": "Detected Common rust on Corn maize",
+    "symptoms": "Visible damage or discoloration on leaves",
+    "treatment": "Aplikasikan fungisida dan pastikan sirkulasi udara yang baik.",
+    "prevention": "Apply recommended treatment and improve growing conditions",
+    "severity": "Medium"
+  },
+  "confidence": 0.75,
+  "timestamp": "2025-06-26T06:26:13.043Z",
+  "processingTime": 1.0,
+  "metadata": {
+    "filename": "plant-image.jpg",
+    "fileSize": 125468,
+    "plantType": "Corn maize"
+  }
+} 

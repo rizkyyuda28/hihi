@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Classification - AI Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .floating-animation { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hover-scale { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hover-scale:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .upload-area { border: 2px dashed #cbd5e1; transition: all 0.3s ease; }
+        .upload-area:hover { border-color: #3b82f6; background-color: #f8fafc; }
+        .upload-area.dragover { border-color: #1d4ed8; background-color: #eff6ff; }
+        .result-card { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🌱</span>
+                    </div>
+                    <span class="text-white font-bold text-xl">PlantAI</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/" class="text-white hover:text-blue-200 transition-colors">Home</a>
+                    <a href="/classification" class="text-white hover:text-blue-200 transition-colors">Classify</a>
+                    <a href="/home" class="text-white hover:text-blue-200 transition-colors">Dashboard</a>
+                    <a href="/logout" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-24 pb-12">
+        <div class="max-w-4xl mx-auto px-4">
+            <!-- Header Section -->
+            <div class="text-center mb-12">
+                <div class="floating-animation inline-block mb-6">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto shadow-lg">
+                        <span class="text-4xl">🔬</span>
+                    </div>
+                </div>
+                <h1 class="text-5xl font-bold text-white mb-4">Plant Disease Classification</h1>
+                <p class="text-xl text-blue-100 max-w-2xl mx-auto">
+                    Upload gambar daun tanaman untuk mendeteksi penyakit menggunakan AI dengan akurasi 86.12%
+                </p>
+            </div>
+
+            <!-- Upload Card -->
+            <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+                <form action="/submit" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <div class="upload-area rounded-2xl p-12 text-center cursor-pointer" id="uploadArea">
+                        <div class="mb-6">
+                            <span class="text-6xl">📁</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Drag & Drop atau Click untuk Upload</h3>
+                        <p class="text-gray-600 mb-6">Pilih gambar daun tanaman (JPG, PNG, maksimal 10MB)</p>
+                        <input type="file" name="my_image" id="my_image" accept="image/*" required class="hidden">
+                        <button type="button" onclick="document.getElementById('my_image').click()" 
+                                class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:translateY(-1px) shadow-lg">
+                            📷 Pilih Gambar
+                        </button>
+                    </div>
+                    
+                    <!-- Selected Image Preview -->
+                    <div id="imagePreview" class="hidden mt-8">
+                        <div class="text-center">
+                            <img id="previewImg" class="max-w-full h-64 object-cover rounded-2xl mx-auto shadow-lg border-4 border-blue-200">
+                            <div class="mt-6">
+                                <button type="submit" 
+                                        class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-green-700 hover:to-blue-700 transition-all transform hover:translateY(-1px) shadow-lg mr-4">
+                                    🔍 Analisis & Prediksi
+                                </button>
+                                <button type="button" onclick="resetUpload()" 
+                                        class="bg-gray-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-600 transition-colors">
+                                    🔄 Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            {% if img_path %}
+            <div class="result-card rounded-3xl shadow-2xl p-8 hover-scale">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">📊 Hasil Analisis AI</h2>
+                    <div class="inline-block bg-green-100 px-6 py-3 rounded-full">
+                        <span class="text-green-800 font-bold text-lg">✅ Analisis Selesai!</span>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Uploaded Image -->
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">🖼️ Gambar yang Dianalisis</h3>
+                        <img src="{{ img_path }}" alt="Uploaded Image" 
+                             class="w-full max-w-sm mx-auto rounded-2xl shadow-lg border-4 border-blue-200 hover:border-blue-400 transition-colors">
+                    </div>
+                    
+                    <!-- Prediction Results -->
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">🎯 Hasil Prediksi</h3>
+                        <div class="bg-white rounded-2xl p-6 shadow-lg">
+                            {{ prediction|safe }}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                            <button onclick="location.reload()" 
+                                    class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all">
+                                🔄 Analisis Gambar Lain
+                            </button>
+                            <button onclick="downloadResult()" 
+                                    class="flex-1 bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-green-700 hover:to-teal-700 transition-all">
+                                💾 Download Hasil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Information Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <div class="bg-white bg-opacity-20 rounded-2xl p-6 text-center text-white backdrop-blur-sm">
+                    <span class="text-4xl mb-3 block">⚡</span>
+                    <h3 class="text-lg font-bold mb-2">Deteksi Cepat</h3>
+                    <p class="text-blue-100">Analisis gambar dalam hitungan detik</p>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-2xl p-6 text-center text-white backdrop-blur-sm">
+                    <span class="text-4xl mb-3 block">🎯</span>
+                    <h3 class="text-lg font-bold mb-2">Akurasi Tinggi</h3>
+                    <p class="text-blue-100">Model AI dengan akurasi 86.12%</p>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-2xl p-6 text-center text-white backdrop-blur-sm">
+                    <span class="text-4xl mb-3 block">🌱</span>
+                    <h3 class="text-lg font-bold mb-2">17 Penyakit</h3>
+                    <p class="text-blue-100">Mendeteksi berbagai jenis penyakit tanaman</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File upload handling
+        const fileInput = document.getElementById('my_image');
+        const uploadArea = document.getElementById('uploadArea');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+        
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+        
+        function handleFileSelect(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    uploadArea.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function resetUpload() {
+            imagePreview.classList.add('hidden');
+            uploadArea.style.display = 'block';
+            fileInput.value = '';
+        }
+        
+        function downloadResult() {
+            // Create a simple text report
+            const content = `Plant Disease Detection Report
+Generated: ${new Date().toLocaleString()}
+Status: Analysis Complete
+Recommendation: See full results above
+            
+Visit: Plant Disease Detection System
+For more information about plant care and disease prevention.`;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'plant-analysis-report.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Add smooth animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate result cards if they exist
+            const resultCards = document.querySelectorAll('.result-card');
+            resultCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

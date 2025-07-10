@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Grid Layout</title>
+    <style>
+        /* Import same CSS as React app */
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom right, #f0fdf4, #dcfce7);
+            min-height: 100vh;
+        }
+
+        .container-max {
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            width: 100%;
+        }
+
+        .grid-responsive {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr;
+            width: 100%;
+        }
+
+        @media (min-width: 640px) {
+            .grid-responsive {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grid-responsive {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            display: block;
+        }
+
+        .btn-primary {
+            background-color: #16a34a;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            min-width: fit-content;
+        }
+
+        .btn-secondary {
+            background-color: #ea580c;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            min-width: fit-content;
+        }
+
+        .text-center { text-align: center; }
+        .mb-16 { margin-bottom: 4rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+
+        .text-5xl { font-size: 3rem; line-height: 1; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+
+        .text-gray-900 { color: #111827; }
+        .text-gray-800 { color: #1f2937; }
+        .text-gray-600 { color: #4b5563; }
+
+        .bg-primary-100 { background-color: #dcfce7; }
+        .text-primary-600 { color: #16a34a; }
+
+        .rounded-full { border-radius: 9999px; }
+        .w-16 { width: 4rem; }
+        .h-16 { height: 4rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .gap-4 { gap: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container-max py-12">
+        <!-- Header Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-gray-900 mb-8">
+                Test Layout Grid
+            </h1>
+            <p class="text-xl text-gray-600 mb-8">
+                Testing responsive grid layout dan CSS styling
+            </p>
+            <div class="flex flex-col gap-4 items-center">
+                <div class="flex flex-col gap-4">
+                    <button class="btn-primary">
+                        Button Primary Test ➤
+                    </button>
+                    <button class="btn-secondary">
+                        Button Secondary Test
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Grid Test -->
+        <div class="grid-responsive mb-16">
+            <div class="card text-center">
+                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span style="font-size: 2rem;">⚡</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Card 1</h3>
+                <p class="text-gray-600">Test card pertama dengan layout grid responsive</p>
+            </div>
+
+            <div class="card text-center">
+                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span style="font-size: 2rem;">🛡️</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Card 2</h3>
+                <p class="text-gray-600">Test card kedua dengan layout grid responsive</p>
+            </div>
+
+            <div class="card text-center">
+                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span style="font-size: 2rem;">🌐</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Card 3</h3>
+                <p class="text-gray-600">Test card ketiga dengan layout grid responsive</p>
+            </div>
+
+            <div class="card text-center">
+                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span style="font-size: 2rem;">📱</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Card 4</h3>
+                <p class="text-gray-600">Test card keempat dengan layout grid responsive</p>
+            </div>
+        </div>
+
+        <!-- Test Status -->
+        <div class="card text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                Layout Test Result
+            </h2>
+            <p class="text-lg text-gray-600 mb-4">
+                Jika Anda melihat 4 card tersusun dalam grid responsive, maka CSS bekerja dengan baik!
+            </p>
+            <div class="text-primary-600 font-semibold">
+                ✅ CSS Grid Layout Working
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

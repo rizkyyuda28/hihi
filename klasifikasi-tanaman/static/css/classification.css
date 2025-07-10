@@ -1,0 +1,122 @@
+body {
+    background: linear-gradient(135deg, #f8ffae, #43c6ac);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-weight: bold;
+    color: #28a745;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.header p {
+    color: #6c757d;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.upload-card {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: slideIn 1s ease-out;
+}
+
+.btn-custom {
+    background-color: #28a745;
+    color: white;
+    border-radius: 25px;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+.result-section {
+    margin-top: 30px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.result-img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+.result {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 2.5s ease-in-out;
+}
+
+/* Animasi */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.ripple {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: ripple-effect 0.6s linear;
+}
+
+@keyframes ripple-effect {
+    from {
+        transform: scale(0);
+        opacity: 1;
+    }
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}

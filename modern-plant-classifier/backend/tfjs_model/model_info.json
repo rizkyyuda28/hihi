@@ -1,0 +1,17 @@
+{
+  "inputShape": [
+    null,
+    224,
+    224,
+    3
+  ],
+  "outputShape": [
+    null,
+    17
+  ],
+  "totalParams": 14867089,
+  "modelSize": "56.71 MB",
+  "accuracy": "86.12%",
+  "framework": "TensorFlow/Keras",
+  "convertedFor": "TensorFlow.js"
+}

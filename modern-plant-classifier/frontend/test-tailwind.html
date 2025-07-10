@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        secondary: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .btn-primary {
+            @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+        }
+        
+        .btn-secondary {
+            @apply bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+        }
+        
+        .card {
+            @apply bg-white rounded-xl shadow-lg border border-gray-200 p-6;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-gray-900 mb-6">
+                AI Plant Disease Detection
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Deteksi penyakit tanaman dengan teknologi AI terdepan. 
+                Akurasi 86.12% untuk 17 kategori penyakit pada jagung, kentang, dan tomat.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#" class="btn-primary text-lg px-8 py-3 flex items-center justify-center">
+                    Mulai Deteksi
+                </a>
+                <a href="#" class="btn-secondary text-lg px-8 py-3">
+                    Login Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div class="card text-center">
+                <div class="p-3 bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    ⚡
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Lightning Fast</h3>
+                <p class="text-gray-600">Analisis gambar dalam hitungan detik dengan teknologi TensorFlow.js</p>
+            </div>
+
+            <div class="card text-center">
+                <div class="p-3 bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    🛡️
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">86.12% Accuracy</h3>
+                <p class="text-gray-600">Model AI yang telah dilatih dengan ribuan gambar untuk akurasi tinggi</p>
+            </div>
+
+            <div class="card text-center">
+                <div class="p-3 bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    🌍
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">17 Disease Types</h3>
+                <p class="text-gray-600">Deteksi berbagai penyakit pada jagung, kentang, dan tomat</p>
+            </div>
+
+            <div class="card text-center">
+                <div class="p-3 bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    📈
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Modern Stack</h3>
+                <p class="text-gray-600">Node.js + React + TensorFlow.js untuk performa optimal</p>
+            </div>
+        </div>
+
+        <!-- Test Message -->
+        <div class="card text-center">
+            <h2 class="text-2xl font-bold text-primary-600 mb-4">🎉 Tailwind CSS Working!</h2>
+            <p class="text-gray-600">Jika Anda melihat styling yang bagus di halaman ini, berarti Tailwind CSS berfungsi dengan baik.</p>
+            <p class="text-sm text-gray-500 mt-4">File test: test-tailwind.html</p>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Klasifikasi Penyakit Tanaman</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container home-container">
+        <img src="static/images/jpg.1.webp" alt="Logo" class="logo mb-4">
+        <h1>Selamat Datang di Klasifikasi Penyakit Tanaman</h1>
+        <div class="nav-links mb-4">
+            <a href="/home" class="btn btn-link">Beranda</a>
+            <a href="/classification" class="btn btn-link">Klasifikasi</a>
+            <a href="/logout" class="btn btn-link">Keluar</a>
+        </div>
+        <p class="lead">Unggah gambar daun tanaman untuk mendeteksi kemungkinan penyakit dan mendapatkan saran pengobatan.</p>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <img src="static/plant.png" alt="Gambar Tanaman" class="img-fluid rounded shadow-sm">
+            </div>
+            <div class="col-md-6 d-flex flex-column justify-content-center">
+                <h2 class="text-success">Mengapa Menggunakan Aplikasi Ini?</h2>
+                <ul class="list-unstyled mt-3">
+                    <li class="mb-2"><i class="fas fa-check-circle text-success"></i> Deteksi penyakit tanaman secara cepat dan akurat.</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success"></i> Saran pengobatan yang tepat berdasarkan hasil klasifikasi.</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success"></i> Mudah digunakan dengan antarmuka yang ramah pengguna.</li>
+                </ul>
+                <a href="/classification" class="btn btn-custom mt-4 align-self-start">Mulai Klasifikasi</a>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="static/images/corn.jpg" class="card-img-top" alt="Jagung">
+                    <div class="card-body">
+                        <h5 class="card-title">Jagung</h5>
+                        <p class="card-text">Jagung adalah tanaman pangan penting yang sering terkena penyakit seperti bercak daun dan karat daun.</p>
+                        <a href="/classification" class="btn btn-custom">Pelajari Lebih Lanjut</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="static/images/potato.jpg" class="card-img-top" alt="Kentang">
+                    <div class="card-body">
+                        <h5 class="card-title">Kentang</h5>
+                        <p class="card-text">Kentang adalah tanaman umbi-umbian yang rentan terhadap penyakit seperti hawar daun dan bercak daun awal.</p>
+                        <a href="/classification" class="btn btn-custom">Pelajari Lebih Lanjut</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="static/images/tomato.jpg" class="card-img-top" alt="Tomat">
+                    <div class="card-body">
+                        <h5 class="card-title">Tomat</h5>
+                        <p class="card-text">Tomat adalah tanaman buah yang sering terkena penyakit seperti bercak bakteri dan hawar daun.</p>
+                        <a href="/classification" class="btn btn-custom">Pelajari Lebih Lanjut</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-5">
+            <div class="card-header">
+                <h3>Informasi Penyakit Tanaman</h3>
+            </div>
+            <div class="card-body text-left">
+                <p>Pelajari lebih lanjut tentang berbagai penyakit tanaman yang dapat dideteksi oleh aplikasi ini:</p>
+                <ul class="list-unstyled">
+                    <li><b>Corn (maize) Cercospora leaf spot Gray leaf spot:</b> Disebabkan oleh jamur Cercospora zeae-maydis.</li>
+                    <li><b>Corn (maize) Common rust:</b> Disebabkan oleh jamur Puccinia sorghi.</li>
+                    <li><b>Corn (maize) Northern Leaf Blight:</b> Disebabkan oleh jamur Exserohilum turcicum.</li>
+                    <li><b>Corn (maize) healthy:</b> Tidak ada penyakit.</li>
+                    <li><b>Potato Early blight:</b> Disebabkan oleh jamur Alternaria solani.</li>
+                    <li><b>Potato Late blight:</b> Disebabkan oleh jamur air Phytophthora infestans.</li>
+                    <li><b>Potato healthy:</b> Tidak ada penyakit.</li>
+                    <li><b>Tomato Bacterial spot:</b> Disebabkan oleh bakteri Xanthomonas campestris pv. vesicatoria.</li>
+                    <li><b>Tomato Early blight:</b> Disebabkan oleh jamur Alternaria solani.</li>
+                    <li><b>Tomato Late blight:</b> Disebabkan oleh jamur air Phytophthora infestans.</li>
+                    <li><b>Tomato Leaf Mold:</b> Disebabkan oleh jamur Cladosporium fulvum.</li>
+                    <li><b>Tomato Septoria leaf spot:</b> Disebabkan oleh jamur Septoria lycopersici.</li>
+                    <li><b>Tomato Spider mites Two spotted spider mite:</b> Disebabkan oleh hama Tetranychus urticae.</li>
+                    <li><b>Tomato Target Spot:</b> Disebabkan oleh jamur Corynespora cassiicola.</li>
+                    <li><b>Tomato Yellow Leaf Curl Virus:</b> Disebabkan oleh virus Begomovirus.</li>
+                    <li><b>Tomato mosaic virus:</b> Disebabkan oleh virus Tobamovirus.</li>
+                    <li><b>Tomato healthy:</b> Tidak ada penyakit.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="watermark text-center mt-5">
+            <p>&copy; 2023 Rizky Yuda Pratama. All rights reserved.</p>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="static/js/script.js"></script>
+</body>
+</html>

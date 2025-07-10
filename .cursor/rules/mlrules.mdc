@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Semua project mengacu pada migration-plan.md
+Proejct harus Dinamis, data dapat di kelola dari admin panel, halaman guest/pengunjung tetap bisa melakukan klasifikasi tanaman.
+Ingat untuk mengedit semua hal yang ada di modern-plant-classifier, selain itu jangan di edit.
+Pastikan agar dataset dan machine learning dapat diakses dari front-end (react) dan backend, dan ingat bahwa ini dinamis jadi dapat CRUD "Data tanaman yang telah di input sebelumnya", dan dapat menambahkan dataset agar user bisa menambahkan model data untuk machine learning
+
+
+
+Dataset dan machine learning tidak boleh di edit ataupun delete.

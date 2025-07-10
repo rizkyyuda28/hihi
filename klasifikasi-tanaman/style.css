@@ -1,0 +1,252 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #32a852, #1e8afa);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 600px;
+    background: #ffffff;
+    color: #333;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px #00000033;
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #32a852;
+    margin-bottom: 10px;
+}
+
+.description {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+.upload-area {
+    margin-bottom: 15px;
+    text-align: center;
+    position: relative;
+}
+
+.upload-area input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-area label {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #f4f4f4;
+    color: #666;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area label:hover {
+    background: #e8e8e8;
+    border-color: #32a852;
+    color: #333;
+}
+
+button {
+    background: linear-gradient(135deg, #32a852, #1e8afa);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.result-section {
+    margin-top: 30px;
+}
+
+.result-section h2 {
+    color: #1e8afa;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.result img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.result {
+    text-align: left;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    color: #333;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.result b {
+    color: #32a852;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-container {
+    margin-top: 100px;
+    max-width: 400px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px #00000033;
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+}
+.login-container img {
+    width: 100px;
+    margin-bottom: 20px;
+}
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #32a852;
+}
+.login-container .form-group {
+    margin-bottom: 15px;
+}
+.login-container button {
+    background: linear-gradient(135deg, #32a852, #1e8afa);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.login-container button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.home-container {
+    margin-top: 50px;
+    text-align: center;
+}
+.home-container h1 {
+    font-size: 2.5rem;
+    color: #32a852;
+    margin-bottom: 20px;
+    animation: fadeInDown 1s ease-out;
+}
+.home-container p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 30px;
+    animation: fadeInUp 1s ease-out;
+}
+.home-container img {
+    width: 300px;
+    margin-bottom: 20px;
+    animation: bounceIn 1s ease-out;
+}
+.home-container .nav-links {
+    margin-bottom: 30px;
+}
+.home-container .nav-links a {
+    margin: 0 10px;
+    color: #32a852;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.home-container .nav-links a:hover {
+    color: #1e8afa;
+}
+.home-container button {
+    background: linear-gradient(135deg, #32a852, #1e8afa);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.home-container button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes bounceIn {
+    from {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
