@@ -18,7 +18,7 @@ const config = {
     },
     define: {
       timestamps: true,
-      underscored: false,
+      underscored: true,
       freezeTableName: false
     }
   },
@@ -38,7 +38,7 @@ const config = {
     },
     define: {
       timestamps: true,
-      underscored: false,
+      underscored: true,
       freezeTableName: false
     },
     dialectOptions: {
