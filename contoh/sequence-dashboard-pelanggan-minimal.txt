@@ -1,0 +1,19 @@
+@startuml
+!theme plain
+
+title Sequence Diagram - Dashboard Pelanggan
+
+participant "Pengguna" as user
+participant "Sistem" as system
+
+user -> system: Login
+system -> system: Validasi role
+system -> user: Tampilkan dashboard
+
+alt Pilih tab
+  user -> system: Klik tab
+  system -> system: Load data tab
+  system -> user: Tampilkan data
+end
+
+@enduml 

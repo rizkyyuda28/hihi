@@ -12,12 +12,13 @@ const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
 const predictionRoutes = require('./routes/predictionRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const detectionHistoryRoutes = require('./routes/detectionHistoryRoutes');
 
 // Import middleware
 const errorMiddleware = require('./middleware/errorMiddleware');
 
 // Import utils
-const sequelize = require('./utils/database');
+const sequelize = require('./config/database');
 
 // Load environment variables
 require('dotenv').config();
@@ -150,6 +151,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/predict', predictionRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/detection-history', detectionHistoryRoutes);
 
 // 404 handler
 app.use((req, res) => {

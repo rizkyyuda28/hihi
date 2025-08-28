@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor white
+
+title Activity Diagram - Plant Disease Classification Process
+
+|User|
+start
+:Akses aplikasi plant classifier;
+:Upload foto tanaman;
+:Submit untuk klasifikasi;
+
+|Frontend|
+:Validasi format gambar;
+:Kirim gambar ke backend;
+
+|Backend|
+:Terima file upload;
+:Validasi ukuran dan tipe file;
+:Simpan file sementara;
+:Panggil ML service;
+
+|ML Service|
+:Load model ML;
+:Preprocess gambar;
+:Predict penyakit tanaman;
+:Return hasil prediksi;
+
+|Backend|
+:Parse hasil prediksi;
+:Generate rekomendasi treatment;
+:Clean up file temporary;
+:Kirim response ke frontend;
+
+|Frontend|
+:Terima hasil prediksi;
+:Tampilkan hasil klasifikasi;
+:Tampilkan rekomendasi treatment;
+
+|User|
+:Lihat hasil prediksi;
+:Lihat rekomendasi treatment;
+stop
+
+@enduml 

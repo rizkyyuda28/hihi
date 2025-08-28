@@ -1,19 +1,20 @@
+// Load environment variables from config.env
+require('dotenv').config({ path: '../config.env' });
+
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Database imports
-const { sequelize } = require('./config/database');
-const Prediction = require('./models/Prediction');
+// No database imports needed - using file system for datasets
 
 const app = express();
 const PORT = process.env.PORT || 3005;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3001', 'http://127.0.0.1:3001'],
+  origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://127.0.0.1:3001', 'http://127.0.0.1:3002'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -49,6 +50,8 @@ const upload = multer({
     }
   }
 });
+
+// No admin routes import needed
 
 // Load ML services in order of preference: Python ML > TensorFlow.js > Fallback
 let mlService;
@@ -139,6 +142,49 @@ app.post('/api/predict/predict', upload.single('image'), async (req, res) => {
     const parsedResult = parseClassName(className);
     const confidencePercent = Math.round(confidence * 100);
 
+    // Get identifiable classes for notification
+    const datasetReader = require('./utils/datasetReader');
+    const identifiableClasses = datasetReader.getIdentifiableClasses();
+    
+    // Check if prediction is reliable and if the class is in our dataset
+    const isReliable = confidencePercent >= 60;
+    const isUnknown = className === 'Unknown' || confidencePercent < 30;
+    const isClassInDataset = Object.values(identifiableClasses).some(cls => 
+      cls.className.toLowerCase() === className.toLowerCase()
+    );
+    
+    // Check if this is a valid plant image (not a flowchart, document, etc.)
+    // If confidence is too high for a non-plant image, it's likely a false positive
+    const isLikelyNonPlantImage = confidencePercent > 90 && !isClassInDataset;
+    const isInvalidPlantImage = confidencePercent < 30 || isLikelyNonPlantImage;
+    
+    console.log('🔍 Image validation:', {
+      confidencePercent,
+      className,
+      isClassInDataset,
+      isLikelyNonPlantImage,
+      isInvalidPlantImage
+    });
+    
+    // Debug: check identifiable classes
+    console.log('🔍 Identifiable classes:', Object.keys(identifiableClasses));
+    console.log('🔍 Current class:', className);
+    
+    // For testing: force invalid for high confidence non-plant images
+    if (confidencePercent > 90 && !isClassInDataset) {
+      console.log('❌ High confidence non-plant image detected, returning notification only');
+      return res.json({
+        success: true,
+        result: null,
+        notification: {
+          type: 'warning',
+          title: 'Foto tidak dikenali',
+          message: 'Mohon upload foto tanaman yang sesuai dengan dataset yang tersedia.',
+          showPlantList: true
+        }
+      });
+    }
+
     // Generate recommendations
     const getRecommendation = (disease, isHealthy) => {
       if (isHealthy) {
@@ -168,37 +214,9 @@ app.post('/api/predict/predict', upload.single('image'), async (req, res) => {
 
     const recommendation = getRecommendation(parsedResult.disease, parsedResult.isHealthy);
 
-    // Save prediction to database
-    try {
-      const predictionRecord = await Prediction.create({
-        imageFilename: req.file.originalname,
-        imagePath: req.file.path,
-        predictedClass: className,
-        predictedClassId: prediction.classId || 0,
-        confidence: confidence,
-        plantType: parsedResult.plant,
-        diseaseType: parsedResult.disease,
-        isHealthy: parsedResult.isHealthy,
-        processingTime: prediction.processingTime || 1000,
-        modelUsed: `klasifikasi-tanaman-${mlServiceType}`,
-        modelAccuracy: '86.12%',
-        allProbabilities: prediction.probabilities || {},
-        userAgent: req.get('User-Agent'),
-        ipAddress: req.ip || req.connection.remoteAddress,
-        isRealML: mlServiceType !== 'fallback',
-        metadata: {
-          fileSize: req.file.size,
-          mimetype: req.file.mimetype,
-          mlServiceType: mlServiceType,
-          confidencePercent: confidencePercent
-        }
-      });
-      
-      console.log(`💾 Prediction saved to database with ID: ${predictionRecord.id}`);
-    } catch (dbError) {
-      console.error('❌ Failed to save prediction to database:', dbError.message);
-      // Don't fail the request if database save fails
-    }
+    // No database saving needed - just log the prediction
+    console.log(`📊 Prediction: ${className} (${confidencePercent}% confidence)`);
+    console.log(`📁 File: ${req.file.originalname} (${req.file.size} bytes)`);
 
     // Clean up uploaded file
     setTimeout(() => {
@@ -207,30 +225,37 @@ app.post('/api/predict/predict', upload.single('image'), async (req, res) => {
       }
     }, 5000); // Delete after 5 seconds
 
+    // Valid image, return result only
+    console.log('✅ Valid image detected, returning prediction result');
     res.json({
       success: true,
-      plant: {
-        name: parsedResult.disease,  // Disease name as main identifier
-        scientificName: null,
-        description: `Detected ${parsedResult.disease} on ${parsedResult.plant}`,
-        symptoms: parsedResult.isHealthy ? 
-          "No visible symptoms detected" : 
-          "Visible damage or discoloration on leaves",
-        treatment: recommendation,
-        prevention: parsedResult.isHealthy ? 
-          "Continue regular care and monitoring" :
-          "Apply recommended treatment and improve growing conditions",
-        severity: parsedResult.isHealthy ? 'Low' : 
-          (confidencePercent > 80 ? 'Medium' : 'High')
+      result: {
+        plant: {
+          name: parsedResult.disease,  // Disease name as main identifier
+          scientificName: null,
+          description: `Detected ${parsedResult.disease} on ${parsedResult.plant}`,
+          symptoms: parsedResult.isHealthy ? 
+            "No visible symptoms detected" : 
+            "Visible damage or discoloration on leaves",
+          treatment: recommendation,
+          prevention: parsedResult.isHealthy ? 
+            "Continue regular care and monitoring" :
+            "Apply recommended treatment and improve growing conditions",
+          severity: parsedResult.isHealthy ? 'Low' : 
+            (confidencePercent > 80 ? 'Medium' : 'High')
+        },
+        confidence: confidence,  // Already in decimal format (0.0-1.0)
+        timestamp: new Date().toISOString(),
+        processingTime: prediction.processingTime / 1000 || 1.0, // Convert to seconds
+        metadata: {
+          filename: req.file.originalname,
+          fileSize: req.file.size,
+          plantType: parsedResult.plant,
+          mlServiceType: mlServiceType,
+          realML: mlServiceType !== 'fallback'
+        }
       },
-      confidence: confidence,  // Already in decimal format (0.0-1.0)
-      timestamp: new Date().toISOString(),
-      processingTime: 1.0,
-      metadata: {
-        filename: req.file.originalname,
-        fileSize: req.file.size,
-        plantType: parsedResult.plant
-      }
+      notification: null
     });
 
   } catch (error) {
@@ -266,43 +291,74 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Initialize database
-async function initializeDatabase() {
+// Initialize system (no database needed)
+async function initializeSystem() {
   try {
-    await sequelize.authenticate();
-    console.log('✅ Database connection established successfully');
+    const datasetReader = require('./utils/datasetReader');
+    const datasets = datasetReader.getAvailableDatasets();
+    const totalImages = datasets.reduce((sum, dataset) => sum + dataset.imageCount, 0);
     
-    // Sync database (create tables if they don't exist)
-    await sequelize.sync({ alter: false });
-    console.log('📊 Database tables synchronized');
+    console.log('✅ System initialized successfully');
+    console.log(`📊 Found ${datasets.length} datasets with ${totalImages} total images`);
+    console.log(`🌱 Supported plants: ${[...new Set(datasets.map(d => d.plantType))].join(', ')}`);
     
   } catch (error) {
-    console.error('❌ Unable to connect to database:', error.message);
-    console.log('⚠️ Continuing without database...');
+    console.error('❌ Error initializing system:', error.message);
+    console.log('⚠️ Continuing with limited functionality...');
   }
 }
 
-// API endpoint for prediction statistics
+// API endpoint for system information (no database needed)
 app.get('/api/stats', async (req, res) => {
   try {
-    const stats = await Prediction.getStatistics();
-    const recentPredictions = await Prediction.getRecentPredictions(10);
+    const datasetReader = require('./utils/datasetReader');
+    const datasets = datasetReader.getAvailableDatasets();
+    const totalImages = datasets.reduce((sum, dataset) => sum + dataset.imageCount, 0);
     
     res.json({
       success: true,
-      statistics: stats,
-      recentPredictions: recentPredictions,
-      mlServiceType: mlServiceType,
-      totalPredictions: stats.reduce((sum, stat) => sum + parseInt(stat.count), 0)
+      systemInfo: {
+        totalDatasets: datasets.length,
+        totalImages: totalImages,
+        mlServiceType: mlServiceType,
+        supportedPlants: [...new Set(datasets.map(d => d.plantType))],
+        modelAccuracy: '86.12%'
+      },
+      lastUpdated: new Date().toISOString()
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to get statistics',
+      error: 'Failed to get system information',
       details: error.message
     });
   }
 });
+
+// API endpoint to get list of identifiable plants
+app.get('/api/plants', async (req, res) => {
+  try {
+    const datasetReader = require('./utils/datasetReader');
+    const plantGroups = datasetReader.getDatasetsByPlantType();
+    const totalDatasets = Object.values(plantGroups).reduce((sum, group) => sum + group.length, 0);
+
+    res.json({
+      success: true,
+      plants: plantGroups,
+      total_datasets: totalDatasets,
+      last_updated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ Error getting plants list:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get plants list',
+      details: error.message
+    });
+  }
+});
+
+// No admin routes needed - datasets are read from folder structure
 
 // Start server
 app.listen(PORT, async () => {
@@ -313,8 +369,8 @@ app.listen(PORT, async () => {
   console.log(`🧠 ML Service: ${mlServiceType} mode`);
   console.log(`🎯 Real ML: ${mlServiceType !== 'fallback' ? 'YES' : 'NO'}`);
   
-  // Initialize database
-  await initializeDatabase();
+  // Initialize system
+  await initializeSystem();
 });
 
 module.exports = app; 

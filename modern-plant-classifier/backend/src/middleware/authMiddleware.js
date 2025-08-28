@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Middleware to verify JWT token
 const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
@@ -9,84 +8,102 @@ const authenticateToken = async (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({
-        success: false,
-        error: 'Access token required'
+        error: 'Access token required',
+        message: 'Please provide a valid access token'
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-jwt-secret');
     
-    // Fetch user from database
-    const user = await User.findByPk(decoded.id, {
-      attributes: ['id', 'username', 'email', 'role', 'isActive']
-    });
-
+    // Cek apakah user masih ada dan aktif
+    const user = await User.findByPk(decoded.userId);
     if (!user || !user.isActive) {
       return res.status(401).json({
-        success: false,
-        error: 'Invalid token'
+        error: 'Invalid token',
+        message: 'User not found or inactive'
       });
     }
 
     req.user = user;
     next();
-
   } catch (error) {
-    console.error('Authentication error:', error);
-    return res.status(403).json({
-      success: false,
-      error: 'Invalid or expired token'
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        error: 'Invalid token',
+        message: 'Token is not valid'
+      });
+    }
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        error: 'Token expired',
+        message: 'Token has expired, please login again'
+      });
+    }
+
+    console.error('Auth middleware error:', error);
+    return res.status(500).json({
+      error: 'Authentication error',
+      message: 'Internal server error'
     });
   }
 };
 
-// Middleware to check if user is admin
-const requireAdmin = (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({
-      success: false,
-      error: 'Authentication required'
+const authenticateSession = async (req, res, next) => {
+  try {
+    if (!req.session || !req.session.userId) {
+      return res.status(401).json({
+        error: 'Session required',
+        message: 'Please login to continue'
+      });
+    }
+
+    const user = await User.findByPk(req.session.userId);
+    if (!user || !user.isActive) {
+      req.session.destroy();
+      return res.status(401).json({
+        error: 'Invalid session',
+        message: 'User not found or inactive'
+      });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Session auth middleware error:', error);
+    return res.status(500).json({
+      error: 'Authentication error',
+      message: 'Internal server error'
     });
   }
-
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({
-      success: false,
-      error: 'Admin access required'
-    });
-  }
-
-  next();
 };
 
-// Optional authentication - allows both authenticated and guest access
 const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-      const user = await User.findByPk(decoded.id, {
-        attributes: ['id', 'username', 'email', 'role', 'isActive']
-      });
-
-      if (user && user.isActive) {
-        req.user = user;
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-jwt-secret');
+        const user = await User.findByPk(decoded.userId);
+        if (user && user.isActive) {
+          req.user = user;
+        }
+      } catch (error) {
+        // Token invalid, lanjutkan sebagai guest
       }
     }
 
-    // Continue regardless of authentication status
     next();
-
   } catch (error) {
-    // Continue without authentication
+    // Jika ada error, lanjutkan sebagai guest
     next();
   }
 };
 
 module.exports = {
   authenticateToken,
-  requireAdmin,
+  authenticateSession,
   optionalAuth
 }; 

@@ -1,27 +1,46 @@
 import React, { useState } from 'react'
 import ImageUpload from '../components/Upload/ImageUpload'
 import PredictionResult from '../components/Results/PredictionResult'
+import PlantNotification from '../components/Notification/PlantNotification'
 
 const Classify = () => {
   const [predictionResult, setPredictionResult] = useState(null)
   const [responseTime, setResponseTime] = useState(null)
+  const [notification, setNotification] = useState(null)
 
-  const handlePredictionResult = (result) => {
+  const handlePredictionResult = (result, notificationData) => {
     console.log('🎯 Classify page received prediction result:', result)
+    console.log('🔔 Notification data:', notificationData)
     
-    // Use processing time from backend if available
-    const responseTime = result.processingTime || 1.0
-    setResponseTime((responseTime / 1000).toFixed(1)) // Convert ms to seconds
+    // If there's a notification, it means the image is not valid
+    if (notificationData) {
+      console.log('⚠️ Invalid image detected, showing notification only')
+      setPredictionResult(null)
+      setResponseTime(null)
+      setNotification(notificationData)
+      return
+    }
     
-    console.log('⏱️ Processing time:', responseTime, 'ms =', (responseTime / 1000).toFixed(1), 's')
-    console.log('💾 Setting prediction result state...')
-    
-    setPredictionResult(result)
+    // Valid prediction result
+    if (result) {
+      const responseTime = result.processingTime || 1.0
+      setResponseTime(responseTime.toFixed(1))
+      console.log('⏱️ Processing time:', responseTime, 'seconds')
+      console.log('💾 Setting prediction result state...')
+      
+      setPredictionResult(result)
+      setNotification(null)
+    }
   }
 
   const resetPrediction = () => {
     setPredictionResult(null)
     setResponseTime(null)
+    setNotification(null)
+  }
+
+  const closeNotification = () => {
+    setNotification(null)
   }
 
   return (
@@ -93,7 +112,7 @@ const Classify = () => {
 
         {/* Results Section */}
         <div className="space-y-6">
-          {predictionResult ? (
+          {predictionResult && !notification ? (
             <>
               <PredictionResult 
                 result={predictionResult} 
@@ -154,6 +173,12 @@ const Classify = () => {
           </div>
         </div>
       </div>
+
+      {/* Notification Modal */}
+      <PlantNotification 
+        notification={notification} 
+        onClose={closeNotification}
+      />
     </div>
   )
 }

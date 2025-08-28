@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: 'http://localhost:3007/api',
+  baseURL: 'http://localhost:3005/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -80,6 +80,9 @@ export const apiService = {
 
   // Get model information
   getModelInfo: () => api.get('/predict/model-info'),
+
+  // Get plants list
+  getPlants: () => api.get('/plants'),
 
   // Admin endpoints
   admin: {

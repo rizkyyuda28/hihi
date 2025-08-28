@@ -109,9 +109,6 @@ const Prediction = sequelize.define('Prediction', {
     },
     {
       fields: ['created_at']
-    },
-    {
-      fields: ['is_real_ml']
     }
   ]
 });
@@ -143,11 +140,10 @@ Prediction.getStatistics = async function() {
       attributes: [
         'plant_type',
         'is_healthy',
-        'is_real_ml',
         [sequelize.fn('COUNT', '*'), 'count'],
         [sequelize.fn('AVG', sequelize.col('confidence')), 'avgConfidence']
       ],
-      group: ['plant_type', 'is_healthy', 'is_real_ml'],
+      group: ['plant_type', 'is_healthy'],
       raw: true
     });
     

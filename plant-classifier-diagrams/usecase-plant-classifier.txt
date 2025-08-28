@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor white
+
+title Use Case Diagram - Plant Disease Classifier System
+
+actor "User" as user
+
+rectangle "Plant Disease Classifier System" {
+  usecase "Upload Plant Image" as UC1
+  usecase "Classify Plant Disease" as UC2
+  usecase "View Prediction Results" as UC3
+  usecase "Get Treatment Recommendations" as UC4
+  usecase "View Plant Database" as UC5
+  usecase "Manage Plant Data" as UC6
+  usecase "Manage Dataset" as UC7
+  usecase "View System Statistics" as UC8
+  usecase "Process ML Prediction" as UC9
+}
+
+user --> UC1
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+user --> UC7
+user --> UC8
+
+UC2 ..> UC9 : <<include>>
+
+UC3 ..> UC4 : <<extend>>
+
+@enduml 

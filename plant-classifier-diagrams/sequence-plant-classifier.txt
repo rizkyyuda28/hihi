@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor white
+
+title Sequence Diagram - Plant Disease Classification
+
+actor User
+participant Frontend
+participant Backend
+participant MLService
+participant DatasetReader
+
+User -> Frontend: Upload plant image
+Frontend -> Frontend: Validate image format
+Frontend -> Backend: POST /api/predict/predict
+
+Backend -> Backend: Validate file size & type
+Backend -> Backend: Save temporary file
+Backend -> MLService: predict(imagePath)
+
+MLService -> MLService: Load ML model
+MLService -> MLService: Preprocess image
+MLService -> MLService: Run prediction
+MLService -> Backend: Return prediction result
+
+Backend -> DatasetReader: getIdentifiableClasses()
+DatasetReader -> Backend: Return class list
+
+Backend -> Backend: Parse prediction result
+Backend -> Backend: Generate recommendations
+Backend -> Backend: Clean up temp file
+Backend -> Frontend: Return prediction response
+
+Frontend -> Frontend: Display results
+Frontend -> User: Show prediction & recommendations
+
+@enduml 

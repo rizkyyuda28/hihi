@@ -39,14 +39,15 @@ const PredictionResult = ({ result, responseTime }) => {
   
   console.log('🎯 PredictionResult received data:', result);
   
+  // Fix: Access nested plant object correctly
   const plant = {
-    name: result.disease || result.plant || 'Unknown Disease',
-    severity: result.severity || 'Medium',
-    description: result.description || null,
-    symptoms: result.symptoms || null,
-    treatment: result.treatment || null,
-    prevention: result.prevention || null,
-    scientificName: result.scientificName || null
+    name: result.plant?.name || result.disease || result.plant || 'Unknown Disease',
+    severity: result.plant?.severity || result.severity || 'Medium',
+    description: result.plant?.description || result.description || null,
+    symptoms: result.plant?.symptoms || result.symptoms || null,
+    treatment: result.plant?.treatment || result.treatment || null,
+    prevention: result.plant?.prevention || result.prevention || null,
+    scientificName: result.plant?.scientificName || result.scientificName || null
   };
   
   const confidence = result.confidence ? (result.confidence * 100).toFixed(1) : '0'

@@ -39,11 +39,11 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const login = async (credentials) => {
+  const login = async (username, password) => {
     try {
       setLoading(true)
       setError(null)
-      const response = await authService.login(credentials)
+      const response = await authService.login({ username, password })
       
       if (response.token) {
         localStorage.setItem('auth_token', response.token)
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       setError(error.message || 'Login failed')
-      return { success: false, error: error.message }
+      throw error
     } finally {
       setLoading(false)
     }

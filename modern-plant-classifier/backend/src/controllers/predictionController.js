@@ -8,6 +8,8 @@ try {
 }
 const Plant = require('../models/Plant');
 const Prediction = require('../models/Prediction');
+const DetectionHistory = require('../models/DetectionHistory');
+const GuestDetectionLimit = require('../models/GuestDetectionLimit');
 const path = require('path');
 const fs = require('fs').promises;
 
@@ -22,8 +24,23 @@ class PredictionController {
         });
       }
 
+      // Check if file passed dataset validation
+      if (!req.fileMetadata || !req.fileMetadata.isValidDataset) {
+        return res.status(400).json({
+          success: false,
+          error: 'File validation failed',
+          message: 'File must contain valid plant/disease keywords from the dataset'
+        });
+      }
+
       const imagePath = req.file.path;
+      const filename = req.file.originalname;
+      const plantType = req.fileMetadata.plantType;
+      const diseaseType = req.fileMetadata.diseaseType;
+      
       console.log(`📷 Processing uploaded image: ${imagePath}`);
+      console.log(`🌱 Plant type detected: ${plantType}`);
+      console.log(`🦠 Disease type detected: ${diseaseType}`);
 
       // Make ML prediction
       const prediction = await mlService.predict(imagePath);
@@ -39,7 +56,7 @@ class PredictionController {
 
       // Save prediction to database
       const predictionRecord = await Prediction.create({
-        userId: req.user?.id || null, // null for guest users
+        userId: req.user?.id || null, // null untuk guest users
         plantId: plant.id,
         imagePath: imagePath,
         confidence: prediction.confidence,
@@ -48,7 +65,35 @@ class PredictionController {
         ipAddress: req.ip
       });
 
-      // Prepare response
+      // Save to detection history with enhanced metadata
+      await DetectionHistory.create({
+        userId: req.user?.id || null,
+        ipAddress: req.ip || req.guestIp || 'unknown',
+        userAgent: req.headers['user-agent'] || req.guestUserAgent || 'unknown',
+        imageFileName: path.basename(imagePath),
+        originalImageName: filename,
+        predictionResult: {
+          ...prediction,
+          detectedPlantType: plantType,
+          detectedDiseaseType: diseaseType,
+          filenameValidation: req.fileMetadata
+        },
+        confidence: prediction.confidence,
+        plantClass: plant.name,
+        recommendations: plant.treatment,
+        isGuest: !req.user,
+        sessionId: req.sessionID
+      });
+
+      // Update guest detection limit if user is guest
+      if (!req.user && req.guestLimit) {
+        await req.guestLimit.update({
+          detectionCount: req.guestLimit.detectionCount + 1,
+          lastDetectionAt: new Date()
+        });
+      }
+
+      // Prepare response with enhanced information
       const response = {
         success: true,
         prediction: {
@@ -66,7 +111,13 @@ class PredictionController {
           },
           confidence: prediction.confidence,
           probabilities: prediction.probabilities,
-          timestamp: predictionRecord.createdAt
+          timestamp: predictionRecord.createdAt,
+          filenameAnalysis: {
+            originalName: filename,
+            detectedPlantType: plantType,
+            detectedDiseaseType: diseaseType,
+            validationPassed: true
+          }
         }
       };
 

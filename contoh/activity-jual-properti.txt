@@ -1,0 +1,28 @@
+@startuml
+skinparam backgroundColor white
+
+title Activity Diagram - Jual Properti
+
+|pelanggan|
+start
+:Akses form jual properti;
+:Isi data properti (judul, kategori, tipe transaksi);
+:Upload foto properti;
+:Isi spesifikasi (luas, kamar, deskripsi);
+:Submit form;
+
+|sistem|
+:Validasi data input;
+:Validasi foto;
+:Set default values (listrik, nama_properti);
+:Simpan properti ke database;
+:Simpan foto ke storage;
+:Create property photos;
+:Tampilkan sukses;
+
+|pelanggan|
+:Lihat konfirmasi;
+:Lihat properti di katalog;
+stop
+
+@enduml 

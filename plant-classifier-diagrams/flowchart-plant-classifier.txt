@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor white
+
+title Flowchart - Plant Disease Classification Decision Flow
+
+start
+:Upload Image;
+
+if (Valid Image Format?) then (yes)
+  if (File Size < 10MB?) then (yes)
+    :Process Image;
+    :ML Prediction;
+    
+    if (Confidence >= 60%?) then (yes)
+      if (Class in Dataset?) then (yes)
+        :Valid Plant Image;
+        :Generate Recommendations;
+        :Display Results;
+      else (no)
+        :High Confidence Non-Plant;
+        :Show Warning Message;
+      endif
+    else (no)
+      :Low Confidence;
+      :Show "Image Not Recognized";
+    endif
+    
+  else (no)
+    :File Too Large;
+    :Show Error Message;
+  endif
+else (no)
+  :Invalid Format;
+  :Show Error Message;
+endif
+
+:Clean Up Temporary Files;
+stop
+
+@enduml 
