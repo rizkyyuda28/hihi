@@ -70,11 +70,11 @@ const ImageUpload = ({ onPredictionResult }) => {
       console.log('📊 Response data:', response.data)
       
       if (response.data.success) {
-        console.log('✅ Prediction successful:', response.data.result)
+        console.log('✅ Prediction successful:', response.data.prediction)
         console.log('🔄 Passing result to parent component...')
         
-        // Pass the entire response to handle notifications
-        onPredictionResult(response.data.result, response.data.notification)
+        // Pass the prediction data to parent component
+        onPredictionResult(response.data.prediction, response.data.notification)
       } else {
         console.error('❌ Prediction failed:', response.data)
         throw new Error(response.data.error || 'Prediction failed')

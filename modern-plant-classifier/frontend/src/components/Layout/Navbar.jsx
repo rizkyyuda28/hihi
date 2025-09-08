@@ -1,8 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Leaf } from 'lucide-react'
+import { Leaf, LogOut, BarChart3 } from 'lucide-react'
+import { useAuth } from '../../contexts/AuthContext'
 
 const Navbar = () => {
+  const { user, isAuthenticated, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+  }
 
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-lg border-b border-primary-200 sticky top-0 z-50">
@@ -28,6 +34,39 @@ const Navbar = () => {
             >
               Classify
             </Link>
+            
+            {/* Show Dashboard and Logout if authenticated */}
+            {isAuthenticated && (
+              <>
+                <Link 
+                  to="/dashboard" 
+                  className="flex items-center space-x-1 text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-1 text-gray-700 hover:text-red-600 font-medium transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </button>
+                <span className="text-sm text-gray-500">
+                  Welcome, {user?.username || 'User'}
+                </span>
+              </>
+            )}
+            
+            {/* Show Login if not authenticated */}
+            {!isAuthenticated && (
+              <Link 
+                to="/login" 
+                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

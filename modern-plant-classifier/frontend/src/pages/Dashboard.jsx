@@ -22,53 +22,50 @@ const Dashboard = () => {
   }, [isAuthenticated])
 
   const loadDashboardData = async () => {
-    // Simulate loading dashboard data
-    // In real app, this would fetch from API
-    const mockStats = {
-      totalPredictions: 247,
-      todayPredictions: 15,
-      avgConfidence: 84.2,
-      healthyPlants: 142,
-      diseasedPlants: 105
-    }
-
-    const mockRecent = [
-      {
-        id: 1,
-        image: '/api/placeholder/80/80',
-        prediction: 'Tomato - Healthy',
-        confidence: 92.5,
-        timestamp: '2 minutes ago',
-        status: 'healthy'
-      },
-      {
-        id: 2,
-        image: '/api/placeholder/80/80',
-        prediction: 'Corn - Northern Leaf Blight',
-        confidence: 88.3,
-        timestamp: '1 hour ago',
-        status: 'diseased'
-      },
-      {
-        id: 3,
-        image: '/api/placeholder/80/80',
-        prediction: 'Potato - Early Blight',
-        confidence: 76.8,
-        timestamp: '3 hours ago',
-        status: 'diseased'
-      },
-      {
-        id: 4,
-        image: '/api/placeholder/80/80',
-        prediction: 'Tomato - Healthy',
-        confidence: 94.1,
-        timestamp: '5 hours ago',
-        status: 'healthy'
+    try {
+      console.log('📊 Loading dashboard data from API...');
+      
+      // Fetch stats and recent predictions in parallel
+      const [statsResponse, recentResponse] = await Promise.all([
+        fetch('http://localhost:3001/api/dashboard/stats'),
+        fetch('http://localhost:3001/api/dashboard/recent-predictions?limit=10')
+      ]);
+      
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        if (statsData.success) {
+          setStats(statsData.data);
+          console.log('✅ Stats loaded:', statsData.data);
+        }
+      } else {
+        console.error('❌ Failed to load stats:', statsResponse.status);
       }
-    ]
-
-    setStats(mockStats)
-    setRecentPredictions(mockRecent)
+      
+      if (recentResponse.ok) {
+        const recentData = await recentResponse.json();
+        if (recentData.success) {
+          setRecentPredictions(recentData.data);
+          console.log('✅ Recent predictions loaded:', recentData.data.length, 'items');
+        }
+      } else {
+        console.error('❌ Failed to load recent predictions:', recentResponse.status);
+      }
+      
+    } catch (error) {
+      console.error('❌ Error loading dashboard data:', error);
+      
+      // Fallback to mock data if API fails
+      const mockStats = {
+        totalPredictions: 0,
+        todayPredictions: 0,
+        avgConfidence: 0,
+        healthyPlants: 0,
+        diseasedPlants: 0
+      };
+      
+      setStats(mockStats);
+      setRecentPredictions([]);
+    }
   }
 
   if (!isAuthenticated) {

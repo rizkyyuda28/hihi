@@ -31,9 +31,13 @@ export const AuthProvider = ({ children }) => {
     try {
       const userData = await authService.verifyToken(token)
       setUser(userData)
+      console.log('✅ Token verified, user logged in:', userData)
     } catch (error) {
+      console.log('❌ Token verification failed:', error)
+      // Don't auto logout, just clear the token silently
       localStorage.removeItem('auth_token')
-      setError('Session expired. Please login again.')
+      setUser(null)
+      // Don't set error to avoid showing "Session expired" message
     } finally {
       setLoading(false)
     }
@@ -45,12 +49,23 @@ export const AuthProvider = ({ children }) => {
       setError(null)
       const response = await authService.login({ username, password })
       
-      if (response.token) {
-        localStorage.setItem('auth_token', response.token)
-        setUser(response.user)
+      console.log('🔍 Login response:', response)
+      
+      // Check if response has data property (axios response)
+      const responseData = response.data || response
+      
+      if (responseData.token) {
+        localStorage.setItem('auth_token', responseData.token)
+        setUser(responseData.user)
+        console.log('✅ Login successful, token saved:', responseData.token)
         return { success: true }
+      } else {
+        console.log('❌ No token in response:', responseData)
+        setError('No token received from server')
+        return { success: false, error: 'No token received' }
       }
     } catch (error) {
+      console.error('❌ Login error:', error)
       setError(error.message || 'Login failed')
       throw error
     } finally {
