@@ -21,25 +21,23 @@ const Login = () => {
     setError('')
 
     try {
-      // Try actual API login first, fallback to demo login
-      let result
-      try {
-        result = await login(credentials)
-      } catch (apiError) {
-        // Fallback to demo login for testing
-        const { authService } = await import('../services/auth')
-        const demoResult = await authService.testLogin(credentials)
-        localStorage.setItem('auth_token', demoResult.token)
-        result = { success: true }
-      }
-
-      if (result.success) {
+      console.log('🚀 Attempting login with:', credentials)
+      
+      // Try actual API login
+      const result = await login(credentials.username, credentials.password)
+      
+      console.log('🔍 Login result:', result)
+      
+      if (result && result.success) {
+        console.log('✅ Login successful, redirecting to dashboard...')
         navigate('/dashboard')
       } else {
-        setError(result.error || 'Login failed')
+        console.log('❌ Login failed:', result)
+        setError(result?.error || 'Login failed')
       }
     } catch (error) {
-      setError('Invalid credentials. Try: admin / password')
+      console.error('❌ Login error:', error)
+      setError('Invalid credentials. Try: admin / admin123')
     } finally {
       setLoading(false)
     }
@@ -55,7 +53,7 @@ const Login = () => {
   const fillDemoCredentials = () => {
     setCredentials({
       username: 'admin',
-      password: 'password'
+      password: 'admin123'
     })
   }
 
@@ -172,7 +170,7 @@ const Login = () => {
                 Use Demo Account
               </button>
               <p className="text-xs text-gray-500 mt-2">
-                Username: admin | Password: password
+                Username: admin | Password: admin123
               </p>
             </div>
           </div>

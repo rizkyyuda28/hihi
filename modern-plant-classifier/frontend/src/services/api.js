@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: 'http://localhost:3005/api',
+  baseURL: 'http://localhost:3001/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -58,8 +58,8 @@ export const apiService = {
 
   // Prediction endpoints
   predict: (formData) => {
-    console.log('🚀 Making prediction request to:', api.defaults.baseURL + '/predict/predict');
-    return api.post('/predict/predict', formData, {
+    console.log('🚀 Making prediction request to:', api.defaults.baseURL + '/predict');
+    return api.post('/predict', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
