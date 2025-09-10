@@ -146,13 +146,22 @@ const validateDatasetFilename = (req, res, next) => {
 
     // Check if filename contains allowed words
     if (!containsAllowedWords(filename)) {
+      console.log(`❌ File validation failed: ${filename} - No allowed keywords found`);
       return res.status(400).json({
         success: false,
         error: 'Invalid filename',
         message: 'Filename must contain plant or disease related keywords from the dataset',
         filename: filename,
         allowedKeywords: ALLOWED_WORDS.slice(0, 20), // Show first 20 for reference
-        suggestion: 'Please rename your file to include plant/disease keywords (e.g., corn_healthy.jpg, tomato_blight.jpg)'
+        suggestion: 'Please rename your file to include plant/disease keywords (e.g., corn_healthy.jpg, tomato_blight.jpg)',
+        examples: [
+          'corn_healthy.jpg',
+          'tomato_blight.jpg', 
+          'potato_rust.jpg',
+          'jagung_sehat.jpg',
+          'tomat_penyakit.jpg',
+          'kentang_healthy.jpg'
+        ]
       });
     }
 

@@ -267,6 +267,42 @@ class PredictionController {
       });
     }
   }
+
+  // Check guest detection limit
+  async checkGuestLimit(req, res) {
+    try {
+      const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+      
+      // Find guest limit record
+      const guestLimit = await GuestDetectionLimit.findOne({
+        where: { ipAddress }
+      });
+
+      const maxDetections = parseInt(process.env.GUEST_MAX_DETECTIONS) || 2;
+      const remainingDetections = Math.max(0, maxDetections - (guestLimit?.detectionCount || 0));
+      const isBlocked = guestLimit?.isBlocked || false;
+
+      res.json({
+        success: true,
+        data: {
+          ipAddress,
+          maxDetections,
+          currentDetections: guestLimit?.detectionCount || 0,
+          remainingDetections,
+          isBlocked,
+          lastDetectionAt: guestLimit?.lastDetectionAt,
+          canDetect: remainingDetections > 0 && !isBlocked
+        }
+      });
+
+    } catch (error) {
+      console.error('❌ Check guest limit error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to check guest detection limit' 
+      });
+    }
+  }
 }
 
 module.exports = new PredictionController(); 

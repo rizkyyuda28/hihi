@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const sequelize = require('../config/database');
 
 const Prediction = sequelize.define('Prediction', {
   id: {
@@ -94,6 +94,7 @@ const Prediction = sequelize.define('Prediction', {
 }, {
   tableName: 'predictions',
   timestamps: true,
+  underscored: true,
   indexes: [
     {
       fields: ['predicted_class']

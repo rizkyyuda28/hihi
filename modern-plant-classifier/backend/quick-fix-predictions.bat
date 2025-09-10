@@ -11,7 +11,7 @@ echo by adding missing columns without dropping the table.
 echo.
 
 REM Configuration
-set DB_NAME=plant_classifier_dev
+set DB_NAME=plant_disease_db
 set DB_USER=postgres
 set DB_HOST=localhost
 set DB_PORT=5432

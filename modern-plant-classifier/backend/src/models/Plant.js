@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const sequelize = require('../config/database');
 
 const Plant = sequelize.define('Plant', {
   id: {
@@ -44,6 +44,8 @@ const Plant = sequelize.define('Plant', {
   }
 }, {
   tableName: 'plants',
+  timestamps: true,
+  underscored: true,
   comment: 'Master data tanaman yang dapat diklasifikasi'
 });
 
