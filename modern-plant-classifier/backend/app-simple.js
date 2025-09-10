@@ -16,7 +16,7 @@ const config = {
   isDevelopment: () => config.NODE_ENV === 'development',
   isProduction: () => config.NODE_ENV === 'production',
   SESSION_SECRET: 'dev-secret-key',
-  CORS_ORIGIN: ['http://localhost:3001', 'http://localhost:3000']
+  CORS_ORIGIN: ['http://localhost:5173','http://localhost:3001', 'http://localhost:3000']
 };
 
 // Create Express application
@@ -173,15 +173,15 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-console.log('Ì∫Ä Starting Modern Plant Disease Classification Server...');
+console.log('ÔøΩÔøΩÔøΩ Starting Modern Plant Disease Classification Server...');
 
 const server = app.listen(config.PORT, config.HOST, () => {
-  console.log('Ìæâ SUCCESS! Modern Node.js backend is running!');
-  console.log(`Ìºê Server: http://${config.HOST}:${config.PORT}`);
-  console.log(`Ì≥ö API Docs: http://${config.HOST}:${config.PORT}/api/docs`);
-  console.log(`Ì¥ß Health Check: http://${config.HOST}:${config.PORT}/health`);
+  console.log('ÔøΩÔøΩÔøΩ SUCCESS! Modern Node.js backend is running!');
+  console.log(`ÔøΩÔøΩÔøΩ Server: http://${config.HOST}:${config.PORT}`);
+  console.log(`ÔøΩÔøΩÔøΩ API Docs: http://${config.HOST}:${config.PORT}/api/docs`);
+  console.log(`ÔøΩÔøΩÔøΩ Health Check: http://${config.HOST}:${config.PORT}/health`);
   console.log(`‚ö° Environment: ${config.NODE_ENV}`);
-  console.log(`Ì∫Ä Performance: Much faster than Python Flask!`);
+  console.log(`ÔøΩÔøΩÔøΩ Performance: Much faster than Python Flask!`);
   console.log('‚úÖ Migration from Python Flask to Node.js SUCCESSFUL!');
 });
 

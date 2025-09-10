@@ -64,7 +64,7 @@ const Login = () => {
         <div className="text-center">
           <div className="flex justify-center items-center space-x-2 mb-6">
             <Leaf className="h-12 w-12 text-primary-600" />
-            <h1 className="text-3xl font-bold text-gray-900">PlantAI</h1>
+            <h1 className="text-3xl font-bold text-gray-900">PlantML</h1>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Login to Dashboard

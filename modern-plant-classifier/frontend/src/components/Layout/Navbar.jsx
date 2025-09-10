@@ -17,7 +17,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 text-primary-700 hover:text-primary-800 transition-colors">
             <Leaf className="h-8 w-8" />
-            <span className="font-bold text-xl">PlantAI</span>
+            <span className="font-bold text-xl">PlantML</span>
           </Link>
 
           {/* Navigation Links */}
