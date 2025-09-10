@@ -73,3 +73,4 @@ const PredictionHistory = sequelize.define('PredictionHistory', {
 });
 
 module.exports = PredictionHistory;
+

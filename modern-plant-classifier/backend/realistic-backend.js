@@ -340,3 +340,4 @@ app.listen(PORT, () => {
   console.log(`\n🎯 Ready for realistic disease detection!`);
   console.log(`💡 Tip: Use filenames with 'rust', 'spot', or 'blight' for diseased predictions`);
 });
+

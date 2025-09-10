@@ -216,3 +216,4 @@ app.listen(PORT, () => {
   console.log(`📊 Dashboard stats: http://localhost:${PORT}/api/dashboard/stats`);
   console.log(`📋 Recent predictions: http://localhost:${PORT}/api/dashboard/recent-predictions`);
 });
+

@@ -272,3 +272,4 @@ app.listen(PORT, () => {
   console.log(`📋 Recent predictions: http://localhost:${PORT}/api/dashboard/recent-predictions`);
   console.log(`\n🎯 Ready to test!`);
 });
+
