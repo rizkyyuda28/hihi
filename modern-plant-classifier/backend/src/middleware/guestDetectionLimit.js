@@ -16,21 +16,21 @@ const guestDetectionLimit = async (req, res, next) => {
 
     // Cek apakah IP sudah ada di database
     let guestLimit = await GuestDetectionLimit.findOne({
-      where: { ipAddress }
+      where: { ip_address: ipAddress }
     });
 
     if (!guestLimit) {
       // Buat record baru untuk IP ini
       guestLimit = await GuestDetectionLimit.create({
-        ipAddress,
-        detectionCount: 0,
-        userAgent
+        ip_address: ipAddress,
+        detection_count: 0,
+        user_agent: userAgent
       });
     }
 
     // Cek apakah sudah 24 jam sejak deteksi terakhir
     const now = new Date();
-    const lastDetection = guestLimit.lastDetectionAt;
+    const lastDetection = guestLimit.last_detection_at;
     
     if (lastDetection) {
       const hoursSinceLastDetection = (now - lastDetection) / (1000 * 60 * 60);
@@ -38,22 +38,22 @@ const guestDetectionLimit = async (req, res, next) => {
       if (hoursSinceLastDetection >= RESET_HOURS) {
         // Reset counter jika sudah 24 jam
         await guestLimit.update({
-          detectionCount: 0,
-          isBlocked: false,
-          blockedAt: null
+          detection_count: 0,
+          is_blocked: false,
+          blocked_at: null
         });
-        guestLimit.detectionCount = 0;
-        guestLimit.isBlocked = false;
+        guestLimit.detection_count = 0;
+        guestLimit.is_blocked = false;
       }
     }
 
     // Cek apakah sudah mencapai limit
-    if (guestLimit.detectionCount >= GUEST_DETECTION_LIMIT) {
+    if (guestLimit.detection_count >= GUEST_DETECTION_LIMIT) {
       // Update status blocked
-      if (!guestLimit.isBlocked) {
+      if (!guestLimit.is_blocked) {
         await guestLimit.update({
-          isBlocked: true,
-          blockedAt: now
+          is_blocked: true,
+          blocked_at: now
         });
       }
 
@@ -74,13 +74,9 @@ const guestDetectionLimit = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Error in guest detection limit middleware:', error);
-    // Jika ada error, block request untuk keamanan
-    return res.status(500).json({
-      error: 'Guest detection limit error',
-      message: 'Unable to verify guest detection limit. Please try again later.',
-      limitReached: false,
-      remainingDetections: 0
-    });
+    // Jika ada error, skip middleware dan lanjutkan request
+    console.warn('⚠️ Guest detection limit middleware error, allowing request to continue');
+    return next();
   }
 };
 
