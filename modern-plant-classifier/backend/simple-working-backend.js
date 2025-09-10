@@ -426,3 +426,4 @@ app.listen(PORT, () => {
   console.log(`   - Detailed plant information`);
   console.log(`   - Working login system`);
 });
+

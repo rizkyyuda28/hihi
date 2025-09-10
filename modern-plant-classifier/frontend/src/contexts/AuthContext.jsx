@@ -54,15 +54,15 @@ export const AuthProvider = ({ children }) => {
       // Check if response has data property (axios response)
       const responseData = response.data || response
       
-      if (responseData.token) {
+      if (responseData.success && responseData.token) {
         localStorage.setItem('auth_token', responseData.token)
         setUser(responseData.user)
         console.log('✅ Login successful, token saved:', responseData.token)
         return { success: true }
       } else {
         console.log('❌ No token in response:', responseData)
-        setError('No token received from server')
-        return { success: false, error: 'No token received' }
+        setError(responseData.error || 'No token received from server')
+        return { success: false, error: responseData.error || 'No token received' }
       }
     } catch (error) {
       console.error('❌ Login error:', error)

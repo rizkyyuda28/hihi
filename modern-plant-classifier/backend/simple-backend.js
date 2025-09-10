@@ -125,3 +125,4 @@ app.listen(PORT, () => {
   console.log(`🧠 Prediction: http://localhost:${PORT}/api/predict`);
   console.log(`\n🎯 Ready to test!`);
 });
+
