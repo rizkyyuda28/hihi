@@ -74,8 +74,13 @@ const guestDetectionLimit = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Error in guest detection limit middleware:', error);
-    // Jika ada error, tetap izinkan request (fail-safe)
-    next();
+    // Jika ada error, block request untuk keamanan
+    return res.status(500).json({
+      error: 'Guest detection limit error',
+      message: 'Unable to verify guest detection limit. Please try again later.',
+      limitReached: false,
+      remainingDetections: 0
+    });
   }
 };
 

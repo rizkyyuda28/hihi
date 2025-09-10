@@ -27,7 +27,13 @@ router.post('/login', async (req, res) => {
       }
     });
 
+    console.log('🔍 Login attempt:', { username, userFound: !!user });
+    if (user) {
+      console.log('👤 User found:', { id: user.id, username: user.username, email: user.email, isActive: user.isActive });
+    }
+
     if (!user || !user.isActive) {
+      console.log('❌ User not found or inactive');
       return res.status(401).json({
         success: false,
         error: 'Invalid credentials'
@@ -35,8 +41,11 @@ router.post('/login', async (req, res) => {
     }
 
     // Validate password
+    console.log('🔐 Validating password...');
     const isValidPassword = await user.validatePassword(password);
+    console.log('🔐 Password validation result:', isValidPassword);
     if (!isValidPassword) {
+      console.log('❌ Invalid password');
       return res.status(401).json({
         success: false,
         error: 'Invalid credentials'

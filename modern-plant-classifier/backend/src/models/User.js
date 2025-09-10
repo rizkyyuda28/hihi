@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const { sequelize } = require('../config/database');
+const sequelize = require('../config/database');
 
 const User = sequelize.define('User', {
   id: {
@@ -32,11 +32,13 @@ const User = sequelize.define('User', {
   },
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true
+    defaultValue: true,
+    field: 'is_active'  // Map to snake_case column
   }
 }, {
   tableName: 'users',
   timestamps: true,
+  underscored: true,  // Enable snake_case conversion
   hooks: {
     beforeCreate: async (user) => {
       if (user.password) {

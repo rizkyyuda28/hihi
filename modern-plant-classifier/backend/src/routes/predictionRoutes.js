@@ -7,7 +7,7 @@ const guestDetectionLimit = require('../middleware/guestDetectionLimit');
 const { validateDatasetFilename } = require('../middleware/datasetValidationMiddleware');
 
 // POST /api/predict - Predict disease from uploaded image (guests allowed with limit)
-router.post('/predict', 
+router.post('/', 
   guestDetectionLimit,
   optionalAuth,
   handleImageUpload,

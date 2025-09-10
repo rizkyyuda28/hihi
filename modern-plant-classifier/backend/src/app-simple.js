@@ -7,10 +7,12 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// No database imports needed - using file system for datasets
+// Import database for login functionality
+const sequelize = require('./config/database');
+const User = require('./models/User');
 
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
@@ -98,6 +100,66 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     service: 'backend-simple'
   });
+});
+
+// Login endpoint
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Username and password are required'
+      });
+    }
+
+    // Find user by username or email
+    const { Op } = require('sequelize');
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [
+          { username: username },
+          { email: username }
+        ]
+      }
+    });
+
+    if (!user || !user.isActive) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid credentials'
+      });
+    }
+
+    // Validate password
+    const isValidPassword = await user.validatePassword(password);
+    if (!isValidPassword) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid credentials'
+      });
+    }
+
+    // Return success response
+    res.json({
+      success: true,
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
 });
 
 // Prediction endpoint

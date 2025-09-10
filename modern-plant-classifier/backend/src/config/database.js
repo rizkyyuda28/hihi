@@ -3,19 +3,9 @@ const { Sequelize } = require('sequelize');
 // Database configuration
 const config = {
   development: {
-    dialect: 'postgresql',
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME || 'plant_classifier_dev',
-    username: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || 'admin123',
+    dialect: 'sqlite',
+    storage: './database.sqlite',
     logging: console.log,
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    },
     define: {
       timestamps: true,
       underscored: true,

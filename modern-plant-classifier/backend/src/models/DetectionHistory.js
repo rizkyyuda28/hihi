@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const sequelize = require('../config/database');
 
 const DetectionHistory = sequelize.define('DetectionHistory', {
   id: {
@@ -7,7 +7,7 @@ const DetectionHistory = sequelize.define('DetectionHistory', {
     primaryKey: true,
     autoIncrement: true
   },
-  userId: {
+  user_id: {
     type: DataTypes.INTEGER,
     allowNull: true, // null untuk guest user
     references: {
@@ -15,23 +15,23 @@ const DetectionHistory = sequelize.define('DetectionHistory', {
       key: 'id'
     }
   },
-  ipAddress: {
+  ip_address: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  userAgent: {
+  user_agent: {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  imageFileName: {
+  image_file_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  originalImageName: {
+  original_image_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  predictionResult: {
+  prediction_result: {
     type: DataTypes.JSON,
     allowNull: false
   },
@@ -39,7 +39,7 @@ const DetectionHistory = sequelize.define('DetectionHistory', {
     type: DataTypes.FLOAT,
     allowNull: false
   },
-  plantClass: {
+  plant_class: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -47,26 +47,27 @@ const DetectionHistory = sequelize.define('DetectionHistory', {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  isGuest: {
+  is_guest: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
-  sessionId: {
+  session_id: {
     type: DataTypes.STRING,
     allowNull: true
   }
 }, {
   tableName: 'detection_history',
   timestamps: true,
+  underscored: true,
   indexes: [
     {
-      fields: ['userId']
+      fields: ['user_id']
     },
     {
-      fields: ['ipAddress']
+      fields: ['ip_address']
     },
     {
-      fields: ['createdAt']
+      fields: ['created_at']
     }
   ]
 });
