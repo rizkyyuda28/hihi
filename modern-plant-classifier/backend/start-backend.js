@@ -11,13 +11,14 @@ const sequelize = require('./src/config/database');
 const User = require('./src/models/User');
 const PredictionHistory = require('./src/models/PredictionHistory');
 const dashboardRoutes = require('./src/routes/dashboardRoutes');
+const mlService = require('./src/services/realMLService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://127.0.0.1:3001', 'http://127.0.0.1:3002'],
+  origin: ['http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://127.0.0.1:3001', 'http://127.0.0.1:3002', 'http://127.0.0.1:5173'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -185,7 +186,36 @@ app.get('/api/auth/verify', (req, res) => {
 // Dashboard routes
 app.use('/api/dashboard', dashboardRoutes);
 
-// Simple prediction endpoint (mock)
+// ML Service status endpoint
+app.get('/api/ml/status', async (req, res) => {
+  try {
+    const status = await mlService.healthCheck();
+    res.json({
+      success: true,
+      ml_service: status
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      error: 'Failed to check ML service status'
+    });
+  }
+});
+
+// Get available classes endpoint
+app.get('/api/ml/classes', async (req, res) => {
+  try {
+    const classes = await mlService.getAvailableClasses();
+    res.json(classes);
+  } catch (error) {
+    res.json({
+      success: false,
+      error: 'Failed to get classes'
+    });
+  }
+});
+
+// Real prediction endpoint with ML integration
 app.post('/api/predict', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
@@ -195,13 +225,25 @@ app.post('/api/predict', upload.single('image'), async (req, res) => {
       });
     }
 
-    // Mock prediction response
-    const prediction = {
-      plant: 'Corn',
-      disease: 'Healthy',
-      confidence: 0.95,
-      recommendations: 'Plant appears healthy. Continue current care routine.'
-    };
+    console.log('🔍 Processing prediction for image:', req.file.filename);
+
+    // Get ML prediction
+    const mlResult = await mlService.predict(req.file.path);
+    
+    if (!mlResult.success) {
+      return res.status(500).json({
+        success: false,
+        error: mlResult.error || 'Prediction failed'
+      });
+    }
+
+    const prediction = mlResult.prediction;
+    const confidence = prediction.confidence;
+    const confidencePercentage = Math.round(confidence * 100);
+
+    // Get detailed recommendations from ML service
+    const recommendations = prediction.recommendations || [];
+    const severityLevel = prediction.severityLevel || 'Medium';
 
     // Save prediction to database
     try {
@@ -209,10 +251,10 @@ app.post('/api/predict', upload.single('image'), async (req, res) => {
         user_id: null, // Guest user
         image_path: req.file.filename,
         prediction: `${prediction.plant} - ${prediction.disease}`,
-        confidence: prediction.confidence * 100, // Convert to percentage
-        status: prediction.disease === 'Healthy' ? 'healthy' : 'diseased',
+        confidence: confidencePercentage,
+        status: prediction.status,
         plant_type: prediction.plant,
-        disease_name: prediction.disease === 'Healthy' ? null : prediction.disease,
+        disease_name: prediction.disease,
         ip_address: req.ip,
         user_agent: req.get('User-Agent')
       });
@@ -222,17 +264,46 @@ app.post('/api/predict', upload.single('image'), async (req, res) => {
       // Continue even if database save fails
     }
 
-    res.json({
+    // Prepare response
+    const response = {
       success: true,
-      prediction: prediction,
-      image: req.file.filename
+      prediction: {
+        plant: prediction.plant,
+        disease: prediction.disease,
+        confidence: confidence,
+        confidencePercentage: confidencePercentage,
+        status: prediction.status,
+        recommendations: recommendations,
+        severityLevel: severityLevel,
+        full_class: prediction.full_class
+      },
+      image: req.file.filename,
+      model_info: {
+        service: mlResult.fallback ? 'Fallback' : 'Real ML Service',
+        accuracy: mlResult.model_info?.accuracy || '86.12%',
+        total_classes: mlResult.model_info?.total_classes || 17
+      }
+    };
+
+    // Add top predictions if available
+    if (mlResult.top_predictions) {
+      response.top_predictions = mlResult.top_predictions;
+    }
+
+    console.log('✅ Prediction completed:', {
+      plant: prediction.plant,
+      disease: prediction.disease,
+      confidence: confidencePercentage + '%',
+      service: response.model_info.service
     });
 
+    res.json(response);
+
   } catch (error) {
-    console.error('Prediction error:', error);
+    console.error('❌ Prediction error:', error);
     res.status(500).json({
       success: false,
-      error: 'Prediction failed'
+      error: 'Prediction failed: ' + error.message
     });
   }
 });

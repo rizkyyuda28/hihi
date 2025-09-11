@@ -1,246 +1,170 @@
-# 🌱 Modern Plant Disease Classifier
+# Modern Plant Disease Classification System
 
-A modern web application for plant disease classification using TensorFlow.js, built with Node.js backend and React frontend.
+Sistem deteksi penyakit tanaman yang dinamis dengan admin panel untuk mengelola data tanaman dan dataset machine learning.
 
-## 🚀 Features
-
-- **AI-Powered Classification**: 86.12% accuracy using TensorFlow.js
-- **17 Plant Disease Categories**: Supports Corn, Potato, and Tomato diseases
-- **Admin Panel**: Dynamic plant data management with CRUD operations
-- **Guest Access**: Visitors can classify plants without registration
-- **Real-time Predictions**: Fast image processing and classification
-- **Responsive Design**: Modern UI with Tailwind CSS
-
-## 🏗️ Architecture
-
-- **Backend**: Node.js + Express + TensorFlow.js
-- **Frontend**: React + Vite + Tailwind CSS
-- **Database**: SQLite with Sequelize ORM
-- **Authentication**: JWT-based with role management
-- **File Upload**: Multer with image processing
-
-## 🛠️ Installation
+## 🚀 Quick Start
 
 ### Prerequisites
+- Node.js >= 16.0.0
+- npm >= 8.0.0
 
-- Node.js 18+ and npm
-- Git
+### Installation & Setup
 
-### Backend Setup
+1. **Install semua dependencies:**
+   ```bash
+   npm run install:all
+   ```
 
-1. Navigate to backend directory:
+2. **Setup database:**
+   ```bash
+   npm run setup
+   ```
+
+3. **Jalankan sistem:**
+   ```bash
+   npm start
+   ```
+
+### Alternative: Gunakan Batch File (Windows)
 ```bash
-cd modern-plant-classifier/backend
+start-system.bat
 ```
 
-2. Install dependencies:
-```bash
-npm install
+## 🌐 Access URLs
+
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:3001
+- **Health Check:** http://localhost:3001/health
+
+## 🔐 Default Admin Login
+
+- **Username:** admin
+- **Password:** admin123
+
+## 📁 Project Structure
+
+```
+modern-plant-classifier/
+├── backend/                 # Node.js + Express API
+│   ├── src/
+│   │   ├── models/         # Database models
+│   │   ├── routes/         # API routes
+│   │   ├── controllers/    # Business logic
+│   │   └── config/         # Database config
+│   ├── database.sqlite     # SQLite database
+│   └── start-backend.js    # Main server file
+├── frontend/               # React + Vite frontend
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── pages/          # Page components
+│   │   ├── services/       # API services
+│   │   └── contexts/       # React contexts
+│   └── package.json
+└── klasifikasi-tanaman/    # Dataset & ML models
+    └── Dataset tanaman/    # Training images
 ```
 
-3. Create environment file (`.env`):
+## 🛠️ Features
+
+### ✅ Implemented
+- [x] User authentication (login/logout)
+- [x] Admin dashboard
+- [x] Plant disease classification
+- [x] SQLite database integration
+- [x] Dynamic plant data management
+- [x] Prediction history tracking
+- [x] Responsive UI with Tailwind CSS
+
+### 🔄 In Progress
+- [ ] Real ML model integration
+- [ ] Dataset management from admin panel
+- [ ] Advanced prediction analytics
+
+## 🐛 Troubleshooting
+
+### Port Already in Use
+Jika port 3001 atau 5173 sudah digunakan:
 ```bash
-NODE_ENV=development
-PORT=3000
-FRONTEND_URL=http://localhost:5173
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-SESSION_SECRET=your-session-secret-change-this-too
+# Kill processes on specific ports
+netstat -ano | findstr :3001
+taskkill /PID <PID_NUMBER> /F
+
+netstat -ano | findstr :5173
+taskkill /PID <PID_NUMBER> /F
 ```
 
-4. Start the backend server:
+### Database Issues
 ```bash
-npm run dev
+# Reset database
+cd backend
+rm database.sqlite
+node setup-database.js
 ```
 
-The backend will:
-- Start on `http://localhost:3000`
-- Initialize SQLite database
-- Load TensorFlow.js model
-- Create default admin user (`admin@plantdisease.com` / `admin123`)
-- Seed plant data
+### Frontend Not Loading
+1. Check if backend is running on port 3001
+2. Check browser console for CORS errors
+3. Verify API base URL in `frontend/src/services/api.js`
 
-### Frontend Setup
-
-1. Navigate to frontend directory:
-```bash
-cd modern-plant-classifier/frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm run dev
-```
-
-The frontend will be available at `http://localhost:5173`
-
-## 📋 Usage
-
-### For Guests
-
-1. Visit the **Classify** page
-2. Upload a plant leaf image (JPG, PNG, WebP)
-3. View AI diagnosis with confidence score
-4. Get detailed disease information and treatment recommendations
-
-### For Registered Users
-
-1. **Register/Login** for personalized experience
-2. **Track prediction history** across sessions
-3. **View statistics** of your classifications
-
-### For Administrators
-
-1. **Login with admin credentials**
-2. **Dashboard Overview**:
-   - View system statistics
-   - Monitor recent predictions
-   - Track usage metrics
-
-3. **Plant Management**:
-   - **Create** new plant diseases
-   - **Update** existing plant information
-   - **Manage** disease severity levels
-   - **Soft delete** plants to preserve history
-
-## 🔧 API Endpoints
-
-### Public Endpoints
-- `POST /api/predict/predict` - Image classification
-- `GET /api/predict/history` - Prediction history
-- `GET /api/predict/stats` - Statistics
-- `GET /api/predict/model-info` - Model information
+## 📝 API Endpoints
 
 ### Authentication
 - `POST /api/auth/login` - User login
-- `POST /api/auth/register` - User registration
-- `GET /api/auth/profile` - Get user profile
+- `GET /api/auth/verify` - Verify token
 
-### Admin Only
-- `GET /api/admin/dashboard` - Dashboard stats
-- `GET /api/admin/plants` - List plants
-- `POST /api/admin/plants` - Create plant
-- `PUT /api/admin/plants/:id` - Update plant
-- `DELETE /api/admin/plants/:id` - Delete plant
-- `GET /api/admin/predictions` - All predictions
+### Predictions
+- `POST /api/predict` - Classify plant disease
+- `GET /api/predict/history` - Get prediction history
 
-## 🌱 Supported Plant Diseases
+### Health
+- `GET /health` - Server health check
 
-### Corn (4 categories)
-- Cercospora leaf spot
-- Common rust
-- Northern Leaf Blight
-- Healthy
+## 🔧 Development
 
-### Potato (3 categories)
-- Early blight
-- Late blight
-- Healthy
+### Backend Development
+```bash
+cd backend
+npm run dev
+```
 
-### Tomato (10 categories)
-- Bacterial spot
-- Early blight
-- Late blight
-- Leaf Mold
-- Septoria leaf spot
-- Spider mites
-- Target Spot
-- Tomato mosaic virus
-- Tomato Yellow Leaf Curl Virus
-- Healthy
+### Frontend Development
+```bash
+cd frontend
+npm run dev
+```
 
-## 💾 Database Schema
+### Database Management
+```bash
+cd backend
+node setup-database.js  # Setup/reset database
+```
 
-### Plants Table
-- `id` - Primary key
-- `name` - Disease name
-- `scientificName` - Scientific name
-- `description` - Disease description
-- `symptoms` - Disease symptoms
-- `treatment` - Treatment recommendations
-- `prevention` - Prevention methods
-- `severity` - Low/Medium/High/Critical
-- `modelClassId` - Maps to ML model class
-- `imageUrl` - Reference image
-- `isActive` - Active status
+## 📊 Database Schema
 
 ### Users Table
-- `id` - Primary key
-- `username` - Unique username
-- `email` - User email
-- `password` - Hashed password
-- `role` - admin/user
-- `isActive` - Account status
+- id, username, email, password, role, is_active
 
-### Predictions Table
-- `id` - Primary key
-- `userId` - User reference (nullable for guests)
-- `plantId` - Plant reference
-- `imagePath` - Uploaded image path
-- `confidence` - Prediction confidence
-- `probabilities` - All class probabilities
-- `sessionId` - Guest session tracking
-- `ipAddress` - Client IP
+### Plants Table
+- id, name, scientific_name, description, is_active
 
-## 🔒 Security Features
+### Diseases Table
+- id, plant_id, name, description, symptoms, treatment
 
-- **JWT Authentication** with secure token handling
-- **Rate Limiting** on API endpoints
-- **Input Validation** with express-validator
-- **File Upload Security** with type and size restrictions
-- **CORS Protection** with specific origin allowlist
-- **Password Hashing** with bcrypt
-- **SQL Injection Protection** with Sequelize ORM
+### Prediction Histories Table
+- id, user_id, image_path, prediction, confidence, status
 
-## 🚀 Deployment
+## 🎯 Next Steps
 
-### Environment Variables for Production
+1. Integrate real TensorFlow.js model
+2. Add dataset management features
+3. Implement advanced analytics
+4. Add more plant types and diseases
+5. Optimize prediction accuracy
 
-```bash
-NODE_ENV=production
-PORT=3000
-FRONTEND_URL=https://your-domain.com
-JWT_SECRET=your-super-secure-production-secret
-SESSION_SECRET=your-secure-session-secret
-DATABASE_URL=your-production-database-url
-```
+## 📞 Support
 
-### Docker Deployment (Optional)
-
-```dockerfile
-# Backend Dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🙏 Acknowledgments
-
-- TensorFlow.js team for the ML framework
-- PlantVillage dataset for training data
-- React and Node.js communities
-- All contributors and users
-
----
-
-**Happy Plant Disease Detection! 🌿🔬** 
+Jika mengalami masalah, periksa:
+1. Logs di terminal backend dan frontend
+2. Browser console untuk error JavaScript
+3. Network tab untuk API call failures
+4. Database file `backend/database.sqlite` exists
