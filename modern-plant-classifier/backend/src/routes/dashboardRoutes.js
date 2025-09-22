@@ -3,16 +3,25 @@ const router = express.Router();
 const PredictionHistory = require('../models/PredictionHistory');
 const User = require('../models/User');
 const { Op } = require('sequelize');
+const { authenticateUser, requireAuth } = require('../middleware/auth');
 
 // Get dashboard statistics
-router.get('/stats', async (req, res) => {
+router.get('/stats', authenticateUser, requireAuth, async (req, res) => {
   try {
     console.log('📊 Fetching dashboard stats...');
     
-    // Get total predictions
-    const totalPredictions = await PredictionHistory.count();
+    const userId = req.user.id;
+    console.log('🔍 User ID for dashboard stats:', userId);
     
-    // Get today's predictions
+    // Build where clause for user-specific data
+    const whereClause = { user_id: userId };
+    
+    // Get total predictions for this user
+    const totalPredictions = await PredictionHistory.count({
+      where: whereClause
+    });
+    
+    // Get today's predictions for this user
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
@@ -20,6 +29,7 @@ router.get('/stats', async (req, res) => {
     
     const todayPredictions = await PredictionHistory.count({
       where: {
+        ...whereClause,
         created_at: {
           [Op.gte]: today,
           [Op.lt]: tomorrow
@@ -27,8 +37,9 @@ router.get('/stats', async (req, res) => {
       }
     });
     
-    // Get average confidence
+    // Get average confidence for this user
     const avgConfidenceResult = await PredictionHistory.findOne({
+      where: whereClause,
       attributes: [
         [PredictionHistory.sequelize.fn('AVG', PredictionHistory.sequelize.col('confidence')), 'avgConfidence']
       ]
@@ -36,13 +47,13 @@ router.get('/stats', async (req, res) => {
     
     const avgConfidence = avgConfidenceResult ? parseFloat(avgConfidenceResult.dataValues.avgConfidence) || 0 : 0;
     
-    // Get healthy vs diseased counts
+    // Get healthy vs diseased counts for this user
     const healthyCount = await PredictionHistory.count({
-      where: { status: 'healthy' }
+      where: { ...whereClause, status: 'healthy' }
     });
     
     const diseasedCount = await PredictionHistory.count({
-      where: { status: 'diseased' }
+      where: { ...whereClause, status: 'diseased' }
     });
     
     const stats = {
@@ -53,7 +64,7 @@ router.get('/stats', async (req, res) => {
       diseasedPlants: diseasedCount
     };
     
-    console.log('✅ Dashboard stats:', stats);
+    console.log('✅ Dashboard stats for user', userId, ':', stats);
     
     res.json({
       success: true,
@@ -70,13 +81,20 @@ router.get('/stats', async (req, res) => {
 });
 
 // Get recent predictions
-router.get('/recent-predictions', async (req, res) => {
+router.get('/recent-predictions', authenticateUser, requireAuth, async (req, res) => {
   try {
     console.log('📋 Fetching recent predictions...');
     
+    const userId = req.user.id;
+    console.log('🔍 User ID for recent predictions:', userId);
+    
     const limit = parseInt(req.query.limit) || 10;
     
+    // Build where clause for user-specific data
+    const whereClause = { user_id: userId };
+    
     const recentPredictions = await PredictionHistory.findAll({
+      where: whereClause,
       order: [['created_at', 'DESC']],
       limit: limit,
       attributes: [
@@ -101,7 +119,7 @@ router.get('/recent-predictions', async (req, res) => {
       timestamp: formatTimestamp(pred.created_at)
     }));
     
-    console.log(`✅ Found ${formattedPredictions.length} recent predictions`);
+    console.log(`✅ Found ${formattedPredictions.length} recent predictions for user ${userId}`);
     
     res.json({
       success: true,
@@ -118,15 +136,22 @@ router.get('/recent-predictions', async (req, res) => {
 });
 
 // Get prediction history with pagination
-router.get('/history', async (req, res) => {
+router.get('/history', authenticateUser, requireAuth, async (req, res) => {
   try {
     console.log('📚 Fetching prediction history...');
+    
+    const userId = req.user.id;
+    console.log('🔍 User ID for prediction history:', userId);
     
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const offset = (page - 1) * limit;
     
+    // Build where clause for user-specific data
+    const whereClause = { user_id: userId };
+    
     const { count, rows } = await PredictionHistory.findAndCountAll({
+      where: whereClause,
       order: [['created_at', 'DESC']],
       limit: limit,
       offset: offset,
@@ -141,6 +166,8 @@ router.get('/history', async (req, res) => {
     });
     
     const totalPages = Math.ceil(count / limit);
+    
+    console.log(`✅ Found ${count} prediction history records for user ${userId}`);
     
     res.json({
       success: true,

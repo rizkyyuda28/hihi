@@ -52,7 +52,7 @@ const Disease = sequelize.define('Disease', {
     comment: 'Cara pencegahan'
   },
   severity_level: {
-    type: DataTypes.ENUM('Low', 'Medium', 'High', 'Critical'),
+    type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'Medium',
     comment: 'Tingkat keparahan penyakit'

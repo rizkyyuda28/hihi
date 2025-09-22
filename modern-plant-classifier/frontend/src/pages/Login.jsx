@@ -177,7 +177,16 @@ const Login = () => {
         </div>
 
         {/* Navigation */}
-        <div className="text-center">
+        <div className="text-center space-y-2">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{' '}
+            <Link 
+              to="/register" 
+              className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
+            >
+              Create one here
+            </Link>
+          </p>
           <Link 
             to="/" 
             className="text-primary-600 hover:text-primary-700 font-medium transition-colors"

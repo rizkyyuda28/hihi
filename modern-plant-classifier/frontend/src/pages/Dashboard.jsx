@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
-import { BarChart3, TrendingUp, Clock, CheckCircle, AlertTriangle, Leaf } from 'lucide-react'
+import { Navigate, Link } from 'react-router-dom'
+import { BarChart3, TrendingUp, Clock, CheckCircle, AlertTriangle, Leaf, Settings } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
 const Dashboard = () => {
@@ -76,12 +76,25 @@ const Dashboard = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Dashboard
-        </h1>
-        <p className="text-gray-600">
-          Welcome back, {user?.name || user?.username}! Here's your plant disease detection overview.
-        </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Dashboard
+            </h1>
+            <p className="text-gray-600">
+              Welcome back, {user?.name || user?.username}! Here's your plant disease detection overview.
+            </p>
+          </div>
+          {user?.role === 'admin' && (
+            <Link
+              to="/admin"
+              className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Settings className="h-5 w-5" />
+              <span>Admin Panel</span>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Stats Grid */}

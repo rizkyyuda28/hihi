@@ -29,7 +29,7 @@ export const authService = {
           Authorization: `Bearer ${token}`
         }
       })
-      return response.user
+      return response.data.user
     } catch (error) {
       throw new Error('Invalid token')
     }

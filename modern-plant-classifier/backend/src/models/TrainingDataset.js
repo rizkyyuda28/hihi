@@ -47,7 +47,7 @@ const TrainingDataset = sequelize.define('TrainingDataset', {
     comment: 'Tinggi gambar dalam pixel'
   },
   dataset_type: {
-    type: DataTypes.ENUM('train', 'validation', 'test'),
+    type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'train',
     comment: 'Jenis dataset untuk ML'
@@ -68,7 +68,7 @@ const TrainingDataset = sequelize.define('TrainingDataset', {
     comment: 'Skor kualitas gambar 0.00-1.00'
   },
   verification_status: {
-    type: DataTypes.ENUM('pending', 'verified', 'rejected'),
+    type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'pending',
     comment: 'Status verifikasi oleh expert'

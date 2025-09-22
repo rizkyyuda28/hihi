@@ -28,7 +28,7 @@ const PredictionHistory = sequelize.define('PredictionHistory', {
     allowNull: false
   },
   status: {
-    type: DataTypes.ENUM('healthy', 'diseased'),
+    type: DataTypes.STRING,
     allowNull: false
   },
   plant_type: {
