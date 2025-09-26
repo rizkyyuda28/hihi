@@ -30,7 +30,7 @@ router.get('/stats', authenticateUser, requireAuth, async (req, res) => {
     const todayPredictions = await PredictionHistory.count({
       where: {
         ...whereClause,
-        created_at: {
+        createdAt: {
           [Op.gte]: today,
           [Op.lt]: tomorrow
         }
@@ -95,7 +95,7 @@ router.get('/recent-predictions', authenticateUser, requireAuth, async (req, res
     
     const recentPredictions = await PredictionHistory.findAll({
       where: whereClause,
-      order: [['created_at', 'DESC']],
+      order: [['createdAt', 'DESC']],
       limit: limit,
       attributes: [
         'id',
@@ -104,7 +104,7 @@ router.get('/recent-predictions', authenticateUser, requireAuth, async (req, res
         'status',
         'plant_type',
         'disease_name',
-        'created_at'
+        'createdAt'
       ]
     });
     
@@ -116,7 +116,7 @@ router.get('/recent-predictions', authenticateUser, requireAuth, async (req, res
       status: pred.status,
       plant_type: pred.plant_type,
       disease_name: pred.disease_name,
-      timestamp: formatTimestamp(pred.created_at)
+      timestamp: formatTimestamp(pred.createdAt)
     }));
     
     console.log(`✅ Found ${formattedPredictions.length} recent predictions for user ${userId}`);
@@ -152,7 +152,7 @@ router.get('/history', authenticateUser, requireAuth, async (req, res) => {
     
     const { count, rows } = await PredictionHistory.findAndCountAll({
       where: whereClause,
-      order: [['created_at', 'DESC']],
+      order: [['createdAt', 'DESC']],
       limit: limit,
       offset: offset,
       include: [

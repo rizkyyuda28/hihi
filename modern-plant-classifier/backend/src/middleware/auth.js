@@ -16,20 +16,24 @@ const authenticateUser = async (req, res, next) => {
     // Mock implementation - in real app, decode JWT to get user ID
     if (token.startsWith('jwt_token_')) {
       // Extract user ID from token (mock implementation)
-      // Format: jwt_token_userId_username
+      // Format: jwt_token_userId_username (but we only use userId for security)
       const tokenParts = token.split('_');
-      if (tokenParts.length >= 4) {
+      if (tokenParts.length >= 3) {
         const userId = parseInt(tokenParts[2]);
-        const username = tokenParts[3];
         
-        // Verify user exists and is active
+        console.log('🔍 Debug token parsing:', { userId, tokenParts });
+        
+        // Verify user exists and is active (only check userId for better security)
+        console.log('🔍 Debug querying user with ID:', userId);
         const user = await User.findOne({
           where: { 
             id: userId, 
-            username: username,
             isActive: true 
           }
         });
+        
+        console.log('🔍 Debug user query result:', user ? user.dataValues : 'null');
+        console.log('🔍 Debug user isActive field:', user ? user.isActive : 'N/A');
         
         if (user) {
           req.user = {

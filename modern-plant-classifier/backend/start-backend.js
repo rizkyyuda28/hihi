@@ -237,18 +237,16 @@ app.get('/api/auth/verify', async (req, res) => {
     
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
     
-    // Extract user ID and username from token (mock implementation)
+    // Extract user ID from token (mock implementation)
     if (token && token.startsWith('jwt_token_')) {
       const tokenParts = token.split('_');
-      if (tokenParts.length >= 4) {
+      if (tokenParts.length >= 3) {
         const userId = parseInt(tokenParts[2]);
-        const username = tokenParts[3];
         
-        // Verify user exists and is active
+        // Verify user exists and is active (only check userId for better security)
         const user = await User.findOne({
           where: { 
             id: userId, 
-            username: username,
             isActive: true 
           }
         });

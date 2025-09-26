@@ -21,9 +21,18 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       setLoading(true)
+      const token = localStorage.getItem('auth_token')
       const [usersResponse, analysesResponse] = await Promise.all([
-        fetch('http://localhost:3001/api/admin/users'),
-        fetch('http://localhost:3001/api/admin/analyses')
+        fetch('http://localhost:3001/api/admin/users', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }),
+        fetch('http://localhost:3001/api/admin/analyses', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
       ])
 
       const usersData = await usersResponse.json()
@@ -71,10 +80,12 @@ const AdminDashboard = () => {
 
   const handleSaveUser = async (userId) => {
     try {
+      const token = localStorage.getItem('auth_token')
       const response = await fetch(`http://localhost:3001/api/admin/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(editForm)
       })
@@ -101,8 +112,12 @@ const AdminDashboard = () => {
     }
 
     try {
+      const token = localStorage.getItem('auth_token')
       const response = await fetch(`http://localhost:3001/api/admin/users/${userId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
 
       const data = await response.json()
@@ -135,17 +150,6 @@ const AdminDashboard = () => {
     return `${baseClasses} bg-red-100 text-red-800`
   }
 
-  if (user?.role !== 'admin') {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
-          <p className="text-gray-600">You don't have permission to access this page.</p>
-      </div>
-    </div>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">

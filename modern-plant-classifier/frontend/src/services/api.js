@@ -35,8 +35,16 @@ api.interceptors.response.use(
   (error) => {
     // Handle common errors
     if (error.response?.status === 401) {
-      localStorage.removeItem('auth_token')
-      window.location.href = '/login'
+      // Only auto logout if it's not a token verification request
+      // This prevents auto logout during app initialization
+      const isTokenVerification = error.config?.url?.includes('/auth/verify')
+      if (!isTokenVerification) {
+        localStorage.removeItem('auth_token')
+        // Only redirect if we're not already on login page
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
+      }
     }
     
     const message = error.response?.data?.error || error.message || 'An error occurred'

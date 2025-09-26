@@ -25,10 +25,26 @@ const Dashboard = () => {
     try {
       console.log('📊 Loading dashboard data from API...');
       
-      // Fetch stats and recent predictions in parallel
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        console.error('❌ No auth token found');
+        return;
+      }
+      
+      // Fetch stats and recent predictions in parallel with proper authentication
       const [statsResponse, recentResponse] = await Promise.all([
-        fetch('http://localhost:3001/api/dashboard/stats'),
-        fetch('http://localhost:3001/api/dashboard/recent-predictions?limit=10')
+        fetch('http://localhost:3001/api/dashboard/stats', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }),
+        fetch('http://localhost:3001/api/dashboard/recent-predictions?limit=10', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
       ]);
       
       if (statsResponse.ok) {
@@ -36,9 +52,12 @@ const Dashboard = () => {
         if (statsData.success) {
           setStats(statsData.data);
           console.log('✅ Stats loaded:', statsData.data);
+        } else {
+          console.error('❌ Stats API error:', statsData.error);
         }
       } else {
-        console.error('❌ Failed to load stats:', statsResponse.status);
+        const errorData = await statsResponse.json();
+        console.error('❌ Failed to load stats:', statsResponse.status, errorData);
       }
       
       if (recentResponse.ok) {
@@ -46,9 +65,12 @@ const Dashboard = () => {
         if (recentData.success) {
           setRecentPredictions(recentData.data);
           console.log('✅ Recent predictions loaded:', recentData.data.length, 'items');
+        } else {
+          console.error('❌ Recent predictions API error:', recentData.error);
         }
       } else {
-        console.error('❌ Failed to load recent predictions:', recentResponse.status);
+        const errorData = await recentResponse.json();
+        console.error('❌ Failed to load recent predictions:', recentResponse.status, errorData);
       }
       
     } catch (error) {
@@ -68,9 +90,6 @@ const Dashboard = () => {
     }
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -226,7 +245,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="card">
+          {/* <div className="card">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">
               Quick Actions
             </h2>
@@ -241,7 +260,7 @@ const Dashboard = () => {
                 View All History
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

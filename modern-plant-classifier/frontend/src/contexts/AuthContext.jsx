@@ -27,16 +27,27 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
+  // Add a function to manually refresh user data
+  const refreshUser = async () => {
+    const token = localStorage.getItem('auth_token')
+    if (token) {
+      await verifyToken(token)
+    }
+  }
+
   const verifyToken = async (token) => {
     try {
+      console.log('🔍 Verifying token...')
       const userData = await authService.verifyToken(token)
       setUser(userData)
       console.log('✅ Token verified, user logged in:', userData)
     } catch (error) {
-      console.log('❌ Token verification failed:', error)
-      // Don't auto logout, just clear the token silently
-      localStorage.removeItem('auth_token')
-      setUser(null)
+      console.log('❌ Token verification failed:', error.message)
+      // Only clear token if it's actually invalid, not just a network error
+      if (error.message.includes('Invalid token') || error.message.includes('User not found')) {
+        localStorage.removeItem('auth_token')
+        setUser(null)
+      }
       // Don't set error to avoid showing "Session expired" message
     } finally {
       setLoading(false)
@@ -85,6 +96,7 @@ export const AuthProvider = ({ children }) => {
     error,
     login,
     logout,
+    refreshUser,
     isAuthenticated: !!user
   }
 
